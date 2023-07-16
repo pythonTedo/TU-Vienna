@@ -1,0 +1,961 @@
+,Countries,variable,value
+0,Australia,Dwellingswithoutbasicfacilities,5.075675676
+1,Austria,Dwellingswithoutbasicfacilities,0.9
+2,Belgium,Dwellingswithoutbasicfacilities,1.9
+3,Canada,Dwellingswithoutbasicfacilities,0.2
+4,Chile,Dwellingswithoutbasicfacilities,9.4
+5,Colombia,Dwellingswithoutbasicfacilities,23.9
+6,Czech Republic,Dwellingswithoutbasicfacilities,0.7
+7,Denmark,Dwellingswithoutbasicfacilities,0.5
+8,Estonia,Dwellingswithoutbasicfacilities,7.0
+9,Finland,Dwellingswithoutbasicfacilities,0.5
+10,France,Dwellingswithoutbasicfacilities,0.5
+11,Germany,Dwellingswithoutbasicfacilities,0.2
+12,Greece,Dwellingswithoutbasicfacilities,0.5
+13,Hungary,Dwellingswithoutbasicfacilities,4.7
+14,Iceland,Dwellingswithoutbasicfacilities,0.0
+15,Ireland,Dwellingswithoutbasicfacilities,1.0
+16,Israel,Dwellingswithoutbasicfacilities,5.075675676
+17,Italy,Dwellingswithoutbasicfacilities,0.7
+18,Japan,Dwellingswithoutbasicfacilities,6.4
+19,Korea,Dwellingswithoutbasicfacilities,2.5
+20,Latvia,Dwellingswithoutbasicfacilities,13.9
+21,Lithuania,Dwellingswithoutbasicfacilities,13.6
+22,Luxembourg,Dwellingswithoutbasicfacilities,0.5
+23,Mexico,Dwellingswithoutbasicfacilities,25.5
+24,Netherlands,Dwellingswithoutbasicfacilities,0.1
+25,New Zealand,Dwellingswithoutbasicfacilities,5.075675676
+26,Norway,Dwellingswithoutbasicfacilities,0.0
+27,Poland,Dwellingswithoutbasicfacilities,3.0
+28,Portugal,Dwellingswithoutbasicfacilities,1.0
+29,Slovak Republic,Dwellingswithoutbasicfacilities,1.2
+30,Slovenia,Dwellingswithoutbasicfacilities,0.4
+31,Spain,Dwellingswithoutbasicfacilities,0.1
+32,Sweden,Dwellingswithoutbasicfacilities,0.0
+33,Switzerland,Dwellingswithoutbasicfacilities,0.1
+34,Turkey,Dwellingswithoutbasicfacilities,8.0
+35,United Kingdom,Dwellingswithoutbasicfacilities,0.3
+36,United States,Dwellingswithoutbasicfacilities,0.1
+37,Brazil,Dwellingswithoutbasicfacilities,6.7
+38,Russia,Dwellingswithoutbasicfacilities,14.8
+39,South Africa,Dwellingswithoutbasicfacilities,37.0
+40,Australia,Housingexpenditure,20.0
+41,Austria,Housingexpenditure,21.0
+42,Belgium,Housingexpenditure,21.0
+43,Canada,Housingexpenditure,22.0
+44,Chile,Housingexpenditure,18.0
+45,Colombia,Housingexpenditure,17.0
+46,Czech Republic,Housingexpenditure,24.0
+47,Denmark,Housingexpenditure,23.0
+48,Estonia,Housingexpenditure,17.0
+49,Finland,Housingexpenditure,23.0
+50,France,Housingexpenditure,21.0
+51,Germany,Housingexpenditure,20.0
+52,Greece,Housingexpenditure,23.0
+53,Hungary,Housingexpenditure,19.0
+54,Iceland,Housingexpenditure,24.0
+55,Ireland,Housingexpenditure,20.0
+56,Israel,Housingexpenditure,20.65789474
+57,Italy,Housingexpenditure,23.0
+58,Japan,Housingexpenditure,22.0
+59,Korea,Housingexpenditure,15.0
+60,Latvia,Housingexpenditure,23.0
+61,Lithuania,Housingexpenditure,19.0
+62,Luxembourg,Housingexpenditure,21.0
+63,Mexico,Housingexpenditure,20.0
+64,Netherlands,Housingexpenditure,19.0
+65,New Zealand,Housingexpenditure,26.0
+66,Norway,Housingexpenditure,17.0
+67,Poland,Housingexpenditure,22.0
+68,Portugal,Housingexpenditure,21.0
+69,Slovak Republic,Housingexpenditure,23.0
+70,Slovenia,Housingexpenditure,18.0
+71,Spain,Housingexpenditure,21.0
+72,Sweden,Housingexpenditure,19.0
+73,Switzerland,Housingexpenditure,22.0
+74,Turkey,Housingexpenditure,20.0
+75,United Kingdom,Housingexpenditure,26.0
+76,United States,Housingexpenditure,19.0
+77,Brazil,Housingexpenditure,20.65789474
+78,Russia,Housingexpenditure,18.0
+79,South Africa,Housingexpenditure,18.0
+80,Australia,Roomsperperson,1.632432432
+81,Austria,Roomsperperson,1.6
+82,Belgium,Roomsperperson,2.2
+83,Canada,Roomsperperson,2.6
+84,Chile,Roomsperperson,1.2
+85,Colombia,Roomsperperson,1.2
+86,Czech Republic,Roomsperperson,1.4
+87,Denmark,Roomsperperson,1.9
+88,Estonia,Roomsperperson,1.6
+89,Finland,Roomsperperson,1.9
+90,France,Roomsperperson,1.8
+91,Germany,Roomsperperson,1.8
+92,Greece,Roomsperperson,1.2
+93,Hungary,Roomsperperson,1.2
+94,Iceland,Roomsperperson,1.6
+95,Ireland,Roomsperperson,2.1
+96,Israel,Roomsperperson,1.2
+97,Italy,Roomsperperson,1.4
+98,Japan,Roomsperperson,1.9
+99,Korea,Roomsperperson,1.5
+100,Latvia,Roomsperperson,1.2
+101,Lithuania,Roomsperperson,1.5
+102,Luxembourg,Roomsperperson,1.9
+103,Mexico,Roomsperperson,1.0
+104,Netherlands,Roomsperperson,1.9
+105,New Zealand,Roomsperperson,2.4
+106,Norway,Roomsperperson,2.1
+107,Poland,Roomsperperson,1.1
+108,Portugal,Roomsperperson,1.7
+109,Slovak Republic,Roomsperperson,1.1
+110,Slovenia,Roomsperperson,1.5
+111,Spain,Roomsperperson,1.9
+112,Sweden,Roomsperperson,1.7
+113,Switzerland,Roomsperperson,1.9
+114,Turkey,Roomsperperson,1.0
+115,United Kingdom,Roomsperperson,1.9
+116,United States,Roomsperperson,2.4
+117,Brazil,Roomsperperson,1.632432432
+118,Russia,Roomsperperson,0.9
+119,South Africa,Roomsperperson,1.632432432
+120,Australia,Householdnetadjusteddisposableincome,32759.0
+121,Austria,Householdnetadjusteddisposableincome,33541.0
+122,Belgium,Householdnetadjusteddisposableincome,30364.0
+123,Canada,Householdnetadjusteddisposableincome,30854.0
+124,Chile,Householdnetadjusteddisposableincome,27807.31034
+125,Colombia,Householdnetadjusteddisposableincome,27807.31034
+126,Czech Republic,Householdnetadjusteddisposableincome,21453.0
+127,Denmark,Householdnetadjusteddisposableincome,29606.0
+128,Estonia,Householdnetadjusteddisposableincome,19697.0
+129,Finland,Householdnetadjusteddisposableincome,29943.0
+130,France,Householdnetadjusteddisposableincome,31304.0
+131,Germany,Householdnetadjusteddisposableincome,34294.0
+132,Greece,Householdnetadjusteddisposableincome,17700.0
+133,Hungary,Householdnetadjusteddisposableincome,27807.31034
+134,Iceland,Householdnetadjusteddisposableincome,27807.31034
+135,Ireland,Householdnetadjusteddisposableincome,25310.0
+136,Israel,Householdnetadjusteddisposableincome,27807.31034
+137,Italy,Householdnetadjusteddisposableincome,26588.0
+138,Japan,Householdnetadjusteddisposableincome,29798.0
+139,Korea,Householdnetadjusteddisposableincome,21882.0
+140,Latvia,Householdnetadjusteddisposableincome,16275.0
+141,Lithuania,Householdnetadjusteddisposableincome,21660.0
+142,Luxembourg,Householdnetadjusteddisposableincome,39264.0
+143,Mexico,Householdnetadjusteddisposableincome,27807.31034
+144,Netherlands,Householdnetadjusteddisposableincome,29333.0
+145,New Zealand,Householdnetadjusteddisposableincome,27807.31034
+146,Norway,Householdnetadjusteddisposableincome,35725.0
+147,Poland,Householdnetadjusteddisposableincome,19814.0
+148,Portugal,Householdnetadjusteddisposableincome,21203.0
+149,Slovak Republic,Householdnetadjusteddisposableincome,20474.0
+150,Slovenia,Householdnetadjusteddisposableincome,20820.0
+151,Spain,Householdnetadjusteddisposableincome,23999.0
+152,Sweden,Householdnetadjusteddisposableincome,31287.0
+153,Switzerland,Householdnetadjusteddisposableincome,37466.0
+154,Turkey,Householdnetadjusteddisposableincome,27807.31034
+155,United Kingdom,Householdnetadjusteddisposableincome,28715.0
+156,United States,Householdnetadjusteddisposableincome,45284.0
+157,Brazil,Householdnetadjusteddisposableincome,27807.31034
+158,Russia,Householdnetadjusteddisposableincome,27807.31034
+159,South Africa,Householdnetadjusteddisposableincome,27807.31034
+160,Australia,Householdnetwealth,427064.0
+161,Austria,Householdnetwealth,308325.0
+162,Belgium,Householdnetwealth,386006.0
+163,Canada,Householdnetwealth,423849.0
+164,Chile,Householdnetwealth,100967.0
+165,Colombia,Householdnetwealth,283705.75
+166,Czech Republic,Householdnetwealth,283705.75
+167,Denmark,Householdnetwealth,118637.0
+168,Estonia,Householdnetwealth,159373.0
+169,Finland,Householdnetwealth,200827.0
+170,France,Householdnetwealth,280653.0
+171,Germany,Householdnetwealth,259667.0
+172,Greece,Householdnetwealth,150134.0
+173,Hungary,Householdnetwealth,104458.0
+174,Iceland,Householdnetwealth,283705.75
+175,Ireland,Householdnetwealth,217130.0
+176,Israel,Householdnetwealth,283705.75
+177,Italy,Householdnetwealth,279889.0
+178,Japan,Householdnetwealth,305878.0
+179,Korea,Householdnetwealth,285980.0
+180,Latvia,Householdnetwealth,70160.0
+181,Lithuania,Householdnetwealth,283705.75
+182,Luxembourg,Householdnetwealth,769053.0
+183,Mexico,Householdnetwealth,283705.75
+184,Netherlands,Householdnetwealth,157824.0
+185,New Zealand,Householdnetwealth,388514.0
+186,Norway,Householdnetwealth,228936.0
+187,Poland,Householdnetwealth,210991.0
+188,Portugal,Householdnetwealth,232666.0
+189,Slovak Republic,Householdnetwealth,119696.0
+190,Slovenia,Householdnetwealth,203044.0
+191,Spain,Householdnetwealth,373548.0
+192,Sweden,Householdnetwealth,283705.75
+193,Switzerland,Householdnetwealth,283705.75
+194,Turkey,Householdnetwealth,283705.75
+195,United Kingdom,Householdnetwealth,548392.0
+196,United States,Householdnetwealth,632100.0
+197,Brazil,Householdnetwealth,283705.75
+198,Russia,Householdnetwealth,283705.75
+199,South Africa,Householdnetwealth,283705.75
+200,Australia,Labourmarketinsecurity,5.4
+201,Austria,Labourmarketinsecurity,3.5
+202,Belgium,Labourmarketinsecurity,3.7
+203,Canada,Labourmarketinsecurity,6.0
+204,Chile,Labourmarketinsecurity,8.7
+205,Colombia,Labourmarketinsecurity,6.812121212
+206,Czech Republic,Labourmarketinsecurity,3.1
+207,Denmark,Labourmarketinsecurity,4.2
+208,Estonia,Labourmarketinsecurity,3.8
+209,Finland,Labourmarketinsecurity,3.9
+210,France,Labourmarketinsecurity,7.6
+211,Germany,Labourmarketinsecurity,2.7
+212,Greece,Labourmarketinsecurity,29.8
+213,Hungary,Labourmarketinsecurity,4.7
+214,Iceland,Labourmarketinsecurity,0.7
+215,Ireland,Labourmarketinsecurity,7.8
+216,Israel,Labourmarketinsecurity,4.2
+217,Italy,Labourmarketinsecurity,12.3
+218,Japan,Labourmarketinsecurity,1.4
+219,Korea,Labourmarketinsecurity,2.6
+220,Latvia,Labourmarketinsecurity,9.6
+221,Lithuania,Labourmarketinsecurity,6.812121212
+222,Luxembourg,Labourmarketinsecurity,1.7
+223,Mexico,Labourmarketinsecurity,5.5
+224,Netherlands,Labourmarketinsecurity,4.8
+225,New Zealand,Labourmarketinsecurity,4.7
+226,Norway,Labourmarketinsecurity,6.812121212
+227,Poland,Labourmarketinsecurity,5.7
+228,Portugal,Labourmarketinsecurity,10.0
+229,Slovak Republic,Labourmarketinsecurity,9.9
+230,Slovenia,Labourmarketinsecurity,5.8
+231,Spain,Labourmarketinsecurity,23.1
+232,Sweden,Labourmarketinsecurity,3.2
+233,Switzerland,Labourmarketinsecurity,6.812121212
+234,Turkey,Labourmarketinsecurity,12.5
+235,United Kingdom,Labourmarketinsecurity,4.5
+236,United States,Labourmarketinsecurity,7.7
+237,Brazil,Labourmarketinsecurity,6.812121212
+238,Russia,Labourmarketinsecurity,6.812121212
+239,South Africa,Labourmarketinsecurity,6.812121212
+240,Australia,Employmentrate,73.0
+241,Austria,Employmentrate,72.0
+242,Belgium,Employmentrate,63.0
+243,Canada,Employmentrate,73.0
+244,Chile,Employmentrate,63.0
+245,Colombia,Employmentrate,67.0
+246,Czech Republic,Employmentrate,74.0
+247,Denmark,Employmentrate,74.0
+248,Estonia,Employmentrate,74.0
+249,Finland,Employmentrate,70.0
+250,France,Employmentrate,65.0
+251,Germany,Employmentrate,75.0
+252,Greece,Employmentrate,53.0
+253,Hungary,Employmentrate,68.0
+254,Iceland,Employmentrate,86.0
+255,Ireland,Employmentrate,67.0
+256,Israel,Employmentrate,69.0
+257,Italy,Employmentrate,58.0
+258,Japan,Employmentrate,75.0
+259,Korea,Employmentrate,67.0
+260,Latvia,Employmentrate,70.0
+261,Lithuania,Employmentrate,70.0
+262,Luxembourg,Employmentrate,66.0
+263,Mexico,Employmentrate,61.0
+264,Netherlands,Employmentrate,76.0
+265,New Zealand,Employmentrate,77.0
+266,Norway,Employmentrate,74.0
+267,Poland,Employmentrate,66.0
+268,Portugal,Employmentrate,68.0
+269,Slovak Republic,Employmentrate,66.0
+270,Slovenia,Employmentrate,69.0
+271,Spain,Employmentrate,62.0
+272,Sweden,Employmentrate,77.0
+273,Switzerland,Employmentrate,80.0
+274,Turkey,Employmentrate,52.0
+275,United Kingdom,Employmentrate,75.0
+276,United States,Employmentrate,70.0
+277,Brazil,Employmentrate,61.0
+278,Russia,Employmentrate,70.0
+279,South Africa,Employmentrate,43.0
+280,Australia,Long-termunemploymentrate,1.31
+281,Austria,Long-termunemploymentrate,1.84
+282,Belgium,Long-termunemploymentrate,3.54
+283,Canada,Long-termunemploymentrate,0.77
+284,Chile,Long-termunemploymentrate,2.836842105
+285,Colombia,Long-termunemploymentrate,0.79
+286,Czech Republic,Long-termunemploymentrate,1.04
+287,Denmark,Long-termunemploymentrate,1.31
+288,Estonia,Long-termunemploymentrate,1.92
+289,Finland,Long-termunemploymentrate,2.13
+290,France,Long-termunemploymentrate,4.0
+291,Germany,Long-termunemploymentrate,1.57
+292,Greece,Long-termunemploymentrate,15.65
+293,Hungary,Long-termunemploymentrate,1.72
+294,Iceland,Long-termunemploymentrate,0.26
+295,Ireland,Long-termunemploymentrate,3.23
+296,Israel,Long-termunemploymentrate,0.49
+297,Italy,Long-termunemploymentrate,6.59
+298,Japan,Long-termunemploymentrate,1.03
+299,Korea,Long-termunemploymentrate,0.05
+300,Latvia,Long-termunemploymentrate,3.35
+301,Lithuania,Long-termunemploymentrate,2.69
+302,Luxembourg,Long-termunemploymentrate,2.35
+303,Mexico,Long-termunemploymentrate,0.07
+304,Netherlands,Long-termunemploymentrate,1.97
+305,New Zealand,Long-termunemploymentrate,0.74
+306,Norway,Long-termunemploymentrate,0.66
+307,Poland,Long-termunemploymentrate,1.52
+308,Portugal,Long-termunemploymentrate,4.43
+309,Slovak Republic,Long-termunemploymentrate,4.78
+310,Slovenia,Long-termunemploymentrate,3.17
+311,Spain,Long-termunemploymentrate,7.66
+312,Sweden,Long-termunemploymentrate,1.12
+313,Switzerland,Long-termunemploymentrate,1.82
+314,Turkey,Long-termunemploymentrate,2.39
+315,United Kingdom,Long-termunemploymentrate,1.13
+316,United States,Long-termunemploymentrate,0.66
+317,Brazil,Long-termunemploymentrate,2.836842105
+318,Russia,Long-termunemploymentrate,1.59
+319,South Africa,Long-termunemploymentrate,16.46
+320,Australia,Personalearnings,49126.0
+321,Austria,Personalearnings,50349.0
+322,Belgium,Personalearnings,49675.0
+323,Canada,Personalearnings,47622.0
+324,Chile,Personalearnings,25879.0
+325,Colombia,Personalearnings,39817.51429
+326,Czech Republic,Personalearnings,25372.0
+327,Denmark,Personalearnings,51466.0
+328,Estonia,Personalearnings,24336.0
+329,Finland,Personalearnings,42964.0
+330,France,Personalearnings,43755.0
+331,Germany,Personalearnings,47585.0
+332,Greece,Personalearnings,26064.0
+333,Hungary,Personalearnings,22576.0
+334,Iceland,Personalearnings,61787.0
+335,Ireland,Personalearnings,47653.0
+336,Israel,Personalearnings,35067.0
+337,Italy,Personalearnings,36658.0
+338,Japan,Personalearnings,40863.0
+339,Korea,Personalearnings,35191.0
+340,Latvia,Personalearnings,23683.0
+341,Lithuania,Personalearnings,24287.0
+342,Luxembourg,Personalearnings,63062.0
+343,Mexico,Personalearnings,15314.0
+344,Netherlands,Personalearnings,52877.0
+345,New Zealand,Personalearnings,40043.0
+346,Norway,Personalearnings,51212.0
+347,Poland,Personalearnings,27046.0
+348,Portugal,Personalearnings,25367.0
+349,Slovak Republic,Personalearnings,24328.0
+350,Slovenia,Personalearnings,34933.0
+351,Spain,Personalearnings,38507.0
+352,Sweden,Personalearnings,42393.0
+353,Switzerland,Personalearnings,62283.0
+354,Turkey,Personalearnings,39817.51429
+355,United Kingdom,Personalearnings,43732.0
+356,United States,Personalearnings,60558.0
+357,Brazil,Personalearnings,39817.51429
+358,Russia,Personalearnings,39817.51429
+359,South Africa,Personalearnings,39817.51429
+360,Australia,Qualityofsupportnetwork,95.0
+361,Austria,Qualityofsupportnetwork,92.0
+362,Belgium,Qualityofsupportnetwork,91.0
+363,Canada,Qualityofsupportnetwork,93.0
+364,Chile,Qualityofsupportnetwork,85.0
+365,Colombia,Qualityofsupportnetwork,89.0
+366,Czech Republic,Qualityofsupportnetwork,91.0
+367,Denmark,Qualityofsupportnetwork,95.0
+368,Estonia,Qualityofsupportnetwork,92.0
+369,Finland,Qualityofsupportnetwork,95.0
+370,France,Qualityofsupportnetwork,90.0
+371,Germany,Qualityofsupportnetwork,90.0
+372,Greece,Qualityofsupportnetwork,80.0
+373,Hungary,Qualityofsupportnetwork,86.0
+374,Iceland,Qualityofsupportnetwork,98.0
+375,Ireland,Qualityofsupportnetwork,95.0
+376,Israel,Qualityofsupportnetwork,88.0
+377,Italy,Qualityofsupportnetwork,92.0
+378,Japan,Qualityofsupportnetwork,89.0
+379,Korea,Qualityofsupportnetwork,78.0
+380,Latvia,Qualityofsupportnetwork,86.0
+381,Lithuania,Qualityofsupportnetwork,88.0
+382,Luxembourg,Qualityofsupportnetwork,93.0
+383,Mexico,Qualityofsupportnetwork,81.0
+384,Netherlands,Qualityofsupportnetwork,91.0
+385,New Zealand,Qualityofsupportnetwork,96.0
+386,Norway,Qualityofsupportnetwork,94.0
+387,Poland,Qualityofsupportnetwork,86.0
+388,Portugal,Qualityofsupportnetwork,88.0
+389,Slovak Republic,Qualityofsupportnetwork,91.0
+390,Slovenia,Qualityofsupportnetwork,92.0
+391,Spain,Qualityofsupportnetwork,93.0
+392,Sweden,Qualityofsupportnetwork,91.0
+393,Switzerland,Qualityofsupportnetwork,93.0
+394,Turkey,Qualityofsupportnetwork,86.0
+395,United Kingdom,Qualityofsupportnetwork,94.0
+396,United States,Qualityofsupportnetwork,91.0
+397,Brazil,Qualityofsupportnetwork,90.0
+398,Russia,Qualityofsupportnetwork,89.0
+399,South Africa,Qualityofsupportnetwork,88.0
+400,Australia,Educationalattainment,81.0
+401,Austria,Educationalattainment,85.0
+402,Belgium,Educationalattainment,77.0
+403,Canada,Educationalattainment,91.0
+404,Chile,Educationalattainment,65.0
+405,Colombia,Educationalattainment,54.0
+406,Czech Republic,Educationalattainment,94.0
+407,Denmark,Educationalattainment,81.0
+408,Estonia,Educationalattainment,89.0
+409,Finland,Educationalattainment,88.0
+410,France,Educationalattainment,78.0
+411,Germany,Educationalattainment,87.0
+412,Greece,Educationalattainment,73.0
+413,Hungary,Educationalattainment,84.0
+414,Iceland,Educationalattainment,77.0
+415,Ireland,Educationalattainment,82.0
+416,Israel,Educationalattainment,87.0
+417,Italy,Educationalattainment,61.0
+418,Japan,Educationalattainment,77.76923077
+419,Korea,Educationalattainment,88.0
+420,Latvia,Educationalattainment,88.0
+421,Lithuania,Educationalattainment,93.0
+422,Luxembourg,Educationalattainment,77.0
+423,Mexico,Educationalattainment,38.0
+424,Netherlands,Educationalattainment,78.0
+425,New Zealand,Educationalattainment,79.0
+426,Norway,Educationalattainment,82.0
+427,Poland,Educationalattainment,92.0
+428,Portugal,Educationalattainment,48.0
+429,Slovak Republic,Educationalattainment,91.0
+430,Slovenia,Educationalattainment,88.0
+431,Spain,Educationalattainment,59.0
+432,Sweden,Educationalattainment,83.0
+433,Switzerland,Educationalattainment,88.0
+434,Turkey,Educationalattainment,39.0
+435,United Kingdom,Educationalattainment,81.0
+436,United States,Educationalattainment,91.0
+437,Brazil,Educationalattainment,49.0
+438,Russia,Educationalattainment,94.0
+439,South Africa,Educationalattainment,73.0
+440,Australia,Studentskills,502.0
+441,Austria,Studentskills,492.0
+442,Belgium,Studentskills,503.0
+443,Canada,Studentskills,523.0
+444,Chile,Studentskills,443.0
+445,Colombia,Studentskills,410.0
+446,Czech Republic,Studentskills,491.0
+447,Denmark,Studentskills,504.0
+448,Estonia,Studentskills,524.0
+449,Finland,Studentskills,523.0
+450,France,Studentskills,496.0
+451,Germany,Studentskills,508.0
+452,Greece,Studentskills,458.0
+453,Hungary,Studentskills,474.0
+454,Iceland,Studentskills,481.0
+455,Ireland,Studentskills,509.0
+456,Israel,Studentskills,472.0
+457,Italy,Studentskills,485.0
+458,Japan,Studentskills,529.0
+459,Korea,Studentskills,519.0
+460,Latvia,Studentskills,487.0
+461,Lithuania,Studentskills,475.0
+462,Luxembourg,Studentskills,483.0
+463,Mexico,Studentskills,416.0
+464,Netherlands,Studentskills,508.0
+465,New Zealand,Studentskills,506.0
+466,Norway,Studentskills,504.0
+467,Poland,Studentskills,504.0
+468,Portugal,Studentskills,497.0
+469,Slovak Republic,Studentskills,463.0
+470,Slovenia,Studentskills,509.0
+471,Spain,Studentskills,491.0
+472,Sweden,Studentskills,496.0
+473,Switzerland,Studentskills,506.0
+474,Turkey,Studentskills,425.0
+475,United Kingdom,Studentskills,500.0
+476,United States,Studentskills,488.0
+477,Brazil,Studentskills,395.0
+478,Russia,Studentskills,492.0
+479,South Africa,Studentskills,486.9487179
+480,Australia,Yearsineducation,21.0
+481,Austria,Yearsineducation,17.0
+482,Belgium,Yearsineducation,19.3
+483,Canada,Yearsineducation,17.3
+484,Chile,Yearsineducation,17.5
+485,Colombia,Yearsineducation,14.1
+486,Czech Republic,Yearsineducation,17.9
+487,Denmark,Yearsineducation,19.5
+488,Estonia,Yearsineducation,17.7
+489,Finland,Yearsineducation,19.8
+490,France,Yearsineducation,16.5
+491,Germany,Yearsineducation,18.1
+492,Greece,Yearsineducation,19.0
+493,Hungary,Yearsineducation,16.4
+494,Iceland,Yearsineducation,19.0
+495,Ireland,Yearsineducation,18.1
+496,Israel,Yearsineducation,15.6
+497,Italy,Yearsineducation,16.6
+498,Japan,Yearsineducation,16.4
+499,Korea,Yearsineducation,17.3
+500,Latvia,Yearsineducation,18.0
+501,Lithuania,Yearsineducation,18.4
+502,Luxembourg,Yearsineducation,15.1
+503,Mexico,Yearsineducation,15.2
+504,Netherlands,Yearsineducation,18.7
+505,New Zealand,Yearsineducation,17.7
+506,Norway,Yearsineducation,18.3
+507,Poland,Yearsineducation,17.6
+508,Portugal,Yearsineducation,16.9
+509,Slovak Republic,Yearsineducation,15.8
+510,Slovenia,Yearsineducation,18.3
+511,Spain,Yearsineducation,17.9
+512,Sweden,Yearsineducation,19.3
+513,Switzerland,Yearsineducation,17.5
+514,Turkey,Yearsineducation,18.3
+515,United Kingdom,Yearsineducation,17.5
+516,United States,Yearsineducation,17.2
+517,Brazil,Yearsineducation,16.2
+518,Russia,Yearsineducation,16.2
+519,South Africa,Yearsineducation,17.54358974
+520,Australia,Airpollution,5.0
+521,Austria,Airpollution,16.0
+522,Belgium,Airpollution,15.0
+523,Canada,Airpollution,7.0
+524,Chile,Airpollution,16.0
+525,Colombia,Airpollution,10.0
+526,Czech Republic,Airpollution,20.0
+527,Denmark,Airpollution,9.0
+528,Estonia,Airpollution,8.0
+529,Finland,Airpollution,6.0
+530,France,Airpollution,13.0
+531,Germany,Airpollution,14.0
+532,Greece,Airpollution,18.0
+533,Hungary,Airpollution,19.0
+534,Iceland,Airpollution,3.0
+535,Ireland,Airpollution,7.0
+536,Israel,Airpollution,21.0
+537,Italy,Airpollution,18.0
+538,Japan,Airpollution,14.0
+539,Korea,Airpollution,28.0
+540,Latvia,Airpollution,11.0
+541,Lithuania,Airpollution,14.0
+542,Luxembourg,Airpollution,12.0
+543,Mexico,Airpollution,16.0
+544,Netherlands,Airpollution,14.0
+545,New Zealand,Airpollution,5.0
+546,Norway,Airpollution,5.0
+547,Poland,Airpollution,22.0
+548,Portugal,Airpollution,10.0
+549,Slovak Republic,Airpollution,21.0
+550,Slovenia,Airpollution,16.0
+551,Spain,Airpollution,11.0
+552,Sweden,Airpollution,6.0
+553,Switzerland,Airpollution,15.0
+554,Turkey,Airpollution,20.0
+555,United Kingdom,Airpollution,11.0
+556,United States,Airpollution,10.0
+557,Brazil,Airpollution,10.0
+558,Russia,Airpollution,15.0
+559,South Africa,Airpollution,22.0
+560,Australia,Waterquality,93.0
+561,Austria,Waterquality,92.0
+562,Belgium,Waterquality,84.0
+563,Canada,Waterquality,91.0
+564,Chile,Waterquality,71.0
+565,Colombia,Waterquality,75.0
+566,Czech Republic,Waterquality,87.0
+567,Denmark,Waterquality,95.0
+568,Estonia,Waterquality,84.0
+569,Finland,Waterquality,95.0
+570,France,Waterquality,81.0
+571,Germany,Waterquality,91.0
+572,Greece,Waterquality,69.0
+573,Hungary,Waterquality,77.0
+574,Iceland,Waterquality,99.0
+575,Ireland,Waterquality,85.0
+576,Israel,Waterquality,67.0
+577,Italy,Waterquality,71.0
+578,Japan,Waterquality,87.0
+579,Korea,Waterquality,76.0
+580,Latvia,Waterquality,79.0
+581,Lithuania,Waterquality,81.0
+582,Luxembourg,Waterquality,84.0
+583,Mexico,Waterquality,68.0
+584,Netherlands,Waterquality,93.0
+585,New Zealand,Waterquality,89.0
+586,Norway,Waterquality,98.0
+587,Poland,Waterquality,82.0
+588,Portugal,Waterquality,86.0
+589,Slovak Republic,Waterquality,85.0
+590,Slovenia,Waterquality,90.0
+591,Spain,Waterquality,72.0
+592,Sweden,Waterquality,96.0
+593,Switzerland,Waterquality,95.0
+594,Turkey,Waterquality,65.0
+595,United Kingdom,Waterquality,84.0
+596,United States,Waterquality,83.0
+597,Brazil,Waterquality,73.0
+598,Russia,Waterquality,55.0
+599,South Africa,Waterquality,67.0
+600,Australia,Stakeholderengagementfordevelopingregulations,2.7
+601,Austria,Stakeholderengagementfordevelopingregulations,1.3
+602,Belgium,Stakeholderengagementfordevelopingregulations,2.0
+603,Canada,Stakeholderengagementfordevelopingregulations,2.9
+604,Chile,Stakeholderengagementfordevelopingregulations,1.3
+605,Colombia,Stakeholderengagementfordevelopingregulations,1.4
+606,Czech Republic,Stakeholderengagementfordevelopingregulations,1.6
+607,Denmark,Stakeholderengagementfordevelopingregulations,2.0
+608,Estonia,Stakeholderengagementfordevelopingregulations,2.7
+609,Finland,Stakeholderengagementfordevelopingregulations,2.2
+610,France,Stakeholderengagementfordevelopingregulations,2.1
+611,Germany,Stakeholderengagementfordevelopingregulations,1.8
+612,Greece,Stakeholderengagementfordevelopingregulations,1.8
+613,Hungary,Stakeholderengagementfordevelopingregulations,1.2
+614,Iceland,Stakeholderengagementfordevelopingregulations,2.1
+615,Ireland,Stakeholderengagementfordevelopingregulations,1.3
+616,Israel,Stakeholderengagementfordevelopingregulations,2.5
+617,Italy,Stakeholderengagementfordevelopingregulations,2.5
+618,Japan,Stakeholderengagementfordevelopingregulations,1.4
+619,Korea,Stakeholderengagementfordevelopingregulations,2.9
+620,Latvia,Stakeholderengagementfordevelopingregulations,2.2
+621,Lithuania,Stakeholderengagementfordevelopingregulations,2.4
+622,Luxembourg,Stakeholderengagementfordevelopingregulations,1.7
+623,Mexico,Stakeholderengagementfordevelopingregulations,3.2
+624,Netherlands,Stakeholderengagementfordevelopingregulations,2.6
+625,New Zealand,Stakeholderengagementfordevelopingregulations,2.5
+626,Norway,Stakeholderengagementfordevelopingregulations,2.2
+627,Poland,Stakeholderengagementfordevelopingregulations,2.6
+628,Portugal,Stakeholderengagementfordevelopingregulations,1.5
+629,Slovak Republic,Stakeholderengagementfordevelopingregulations,3.0
+630,Slovenia,Stakeholderengagementfordevelopingregulations,2.5
+631,Spain,Stakeholderengagementfordevelopingregulations,1.8
+632,Sweden,Stakeholderengagementfordevelopingregulations,2.0
+633,Switzerland,Stakeholderengagementfordevelopingregulations,2.3
+634,Turkey,Stakeholderengagementfordevelopingregulations,1.5
+635,United Kingdom,Stakeholderengagementfordevelopingregulations,3.1
+636,United States,Stakeholderengagementfordevelopingregulations,3.1
+637,Brazil,Stakeholderengagementfordevelopingregulations,2.2
+638,Russia,Stakeholderengagementfordevelopingregulations,2.160526316
+639,South Africa,Stakeholderengagementfordevelopingregulations,2.160526316
+640,Australia,Voterturnout,91.0
+641,Austria,Voterturnout,80.0
+642,Belgium,Voterturnout,89.0
+643,Canada,Voterturnout,68.0
+644,Chile,Voterturnout,47.0
+645,Colombia,Voterturnout,53.0
+646,Czech Republic,Voterturnout,61.0
+647,Denmark,Voterturnout,86.0
+648,Estonia,Voterturnout,64.0
+649,Finland,Voterturnout,67.0
+650,France,Voterturnout,75.0
+651,Germany,Voterturnout,76.0
+652,Greece,Voterturnout,64.0
+653,Hungary,Voterturnout,70.0
+654,Iceland,Voterturnout,79.0
+655,Ireland,Voterturnout,65.0
+656,Israel,Voterturnout,72.0
+657,Italy,Voterturnout,73.0
+658,Japan,Voterturnout,53.0
+659,Korea,Voterturnout,77.0
+660,Latvia,Voterturnout,59.0
+661,Lithuania,Voterturnout,51.0
+662,Luxembourg,Voterturnout,91.0
+663,Mexico,Voterturnout,63.0
+664,Netherlands,Voterturnout,82.0
+665,New Zealand,Voterturnout,80.0
+666,Norway,Voterturnout,78.0
+667,Poland,Voterturnout,55.0
+668,Portugal,Voterturnout,56.0
+669,Slovak Republic,Voterturnout,60.0
+670,Slovenia,Voterturnout,53.0
+671,Spain,Voterturnout,70.0
+672,Sweden,Voterturnout,86.0
+673,Switzerland,Voterturnout,49.0
+674,Turkey,Voterturnout,86.0
+675,United Kingdom,Voterturnout,69.0
+676,United States,Voterturnout,65.0
+677,Brazil,Voterturnout,79.0
+678,Russia,Voterturnout,68.0
+679,South Africa,Voterturnout,73.0
+680,Australia,Lifeexpectancy,82.5
+681,Austria,Lifeexpectancy,81.7
+682,Belgium,Lifeexpectancy,81.5
+683,Canada,Lifeexpectancy,81.9
+684,Chile,Lifeexpectancy,79.9
+685,Colombia,Lifeexpectancy,76.2
+686,Czech Republic,Lifeexpectancy,79.1
+687,Denmark,Lifeexpectancy,80.9
+688,Estonia,Lifeexpectancy,77.8
+689,Finland,Lifeexpectancy,81.5
+690,France,Lifeexpectancy,82.4
+691,Germany,Lifeexpectancy,81.1
+692,Greece,Lifeexpectancy,81.5
+693,Hungary,Lifeexpectancy,76.2
+694,Iceland,Lifeexpectancy,82.3
+695,Ireland,Lifeexpectancy,81.8
+696,Israel,Lifeexpectancy,82.5
+697,Italy,Lifeexpectancy,83.3
+698,Japan,Lifeexpectancy,84.1
+699,Korea,Lifeexpectancy,82.4
+700,Latvia,Lifeexpectancy,74.7
+701,Lithuania,Lifeexpectancy,74.8
+702,Luxembourg,Lifeexpectancy,82.8
+703,Mexico,Lifeexpectancy,75.4
+704,Netherlands,Lifeexpectancy,81.6
+705,New Zealand,Lifeexpectancy,81.7
+706,Norway,Lifeexpectancy,82.5
+707,Poland,Lifeexpectancy,78.0
+708,Portugal,Lifeexpectancy,81.2
+709,Slovak Republic,Lifeexpectancy,77.3
+710,Slovenia,Lifeexpectancy,81.3
+711,Spain,Lifeexpectancy,83.4
+712,Sweden,Lifeexpectancy,82.4
+713,Switzerland,Lifeexpectancy,83.7
+714,Turkey,Lifeexpectancy,78.0
+715,United Kingdom,Lifeexpectancy,81.2
+716,United States,Lifeexpectancy,78.6
+717,Brazil,Lifeexpectancy,74.8
+718,Russia,Lifeexpectancy,71.8
+719,South Africa,Lifeexpectancy,57.5
+720,Australia,Self-reportedhealth,85.0
+721,Austria,Self-reportedhealth,70.0
+722,Belgium,Self-reportedhealth,74.0
+723,Canada,Self-reportedhealth,88.0
+724,Chile,Self-reportedhealth,57.0
+725,Colombia,Self-reportedhealth,66.81081081
+726,Czech Republic,Self-reportedhealth,60.0
+727,Denmark,Self-reportedhealth,71.0
+728,Estonia,Self-reportedhealth,53.0
+729,Finland,Self-reportedhealth,70.0
+730,France,Self-reportedhealth,66.0
+731,Germany,Self-reportedhealth,65.0
+732,Greece,Self-reportedhealth,74.0
+733,Hungary,Self-reportedhealth,60.0
+734,Iceland,Self-reportedhealth,76.0
+735,Ireland,Self-reportedhealth,83.0
+736,Israel,Self-reportedhealth,84.0
+737,Italy,Self-reportedhealth,71.0
+738,Japan,Self-reportedhealth,36.0
+739,Korea,Self-reportedhealth,33.0
+740,Latvia,Self-reportedhealth,47.0
+741,Lithuania,Self-reportedhealth,43.0
+742,Luxembourg,Self-reportedhealth,69.0
+743,Mexico,Self-reportedhealth,66.0
+744,Netherlands,Self-reportedhealth,76.0
+745,New Zealand,Self-reportedhealth,88.0
+746,Norway,Self-reportedhealth,77.0
+747,Poland,Self-reportedhealth,58.0
+748,Portugal,Self-reportedhealth,48.0
+749,Slovak Republic,Self-reportedhealth,66.0
+750,Slovenia,Self-reportedhealth,64.0
+751,Spain,Self-reportedhealth,72.0
+752,Sweden,Self-reportedhealth,75.0
+753,Switzerland,Self-reportedhealth,78.0
+754,Turkey,Self-reportedhealth,69.0
+755,United Kingdom,Self-reportedhealth,69.0
+756,United States,Self-reportedhealth,88.0
+757,Brazil,Self-reportedhealth,66.81081081
+758,Russia,Self-reportedhealth,43.0
+759,South Africa,Self-reportedhealth,66.81081081
+760,Australia,Lifesatisfaction,7.3
+761,Austria,Lifesatisfaction,7.1
+762,Belgium,Lifesatisfaction,6.9
+763,Canada,Lifesatisfaction,7.4
+764,Chile,Lifesatisfaction,6.5
+765,Colombia,Lifesatisfaction,6.3
+766,Czech Republic,Lifesatisfaction,6.7
+767,Denmark,Lifesatisfaction,7.6
+768,Estonia,Lifesatisfaction,5.7
+769,Finland,Lifesatisfaction,7.6
+770,France,Lifesatisfaction,6.5
+771,Germany,Lifesatisfaction,7.0
+772,Greece,Lifesatisfaction,5.4
+773,Hungary,Lifesatisfaction,5.6
+774,Iceland,Lifesatisfaction,7.5
+775,Ireland,Lifesatisfaction,7.0
+776,Israel,Lifesatisfaction,7.2
+777,Italy,Lifesatisfaction,6.0
+778,Japan,Lifesatisfaction,5.9
+779,Korea,Lifesatisfaction,5.9
+780,Latvia,Lifesatisfaction,5.9
+781,Lithuania,Lifesatisfaction,5.9
+782,Luxembourg,Lifesatisfaction,6.9
+783,Mexico,Lifesatisfaction,6.5
+784,Netherlands,Lifesatisfaction,7.4
+785,New Zealand,Lifesatisfaction,7.3
+786,Norway,Lifesatisfaction,7.6
+787,Poland,Lifesatisfaction,6.1
+788,Portugal,Lifesatisfaction,5.4
+789,Slovak Republic,Lifesatisfaction,6.2
+790,Slovenia,Lifesatisfaction,5.9
+791,Spain,Lifesatisfaction,6.3
+792,Sweden,Lifesatisfaction,7.3
+793,Switzerland,Lifesatisfaction,7.5
+794,Turkey,Lifesatisfaction,5.5
+795,United Kingdom,Lifesatisfaction,6.8
+796,United States,Lifesatisfaction,6.9
+797,Brazil,Lifesatisfaction,6.4
+798,Russia,Lifesatisfaction,5.8
+799,South Africa,Lifesatisfaction,4.7
+800,Australia,Feelingsafewalkingaloneatnight,63.5
+801,Austria,Feelingsafewalkingaloneatnight,80.6
+802,Belgium,Feelingsafewalkingaloneatnight,70.1
+803,Canada,Feelingsafewalkingaloneatnight,82.2
+804,Chile,Feelingsafewalkingaloneatnight,47.9
+805,Colombia,Feelingsafewalkingaloneatnight,44.4
+806,Czech Republic,Feelingsafewalkingaloneatnight,72.3
+807,Denmark,Feelingsafewalkingaloneatnight,83.5
+808,Estonia,Feelingsafewalkingaloneatnight,69.0
+809,Finland,Feelingsafewalkingaloneatnight,85.1
+810,France,Feelingsafewalkingaloneatnight,70.5
+811,Germany,Feelingsafewalkingaloneatnight,72.5
+812,Greece,Feelingsafewalkingaloneatnight,60.0
+813,Hungary,Feelingsafewalkingaloneatnight,56.3
+814,Iceland,Feelingsafewalkingaloneatnight,86.0
+815,Ireland,Feelingsafewalkingaloneatnight,75.9
+816,Israel,Feelingsafewalkingaloneatnight,69.8
+817,Italy,Feelingsafewalkingaloneatnight,58.4
+818,Japan,Feelingsafewalkingaloneatnight,72.5
+819,Korea,Feelingsafewalkingaloneatnight,66.6
+820,Latvia,Feelingsafewalkingaloneatnight,62.4
+821,Lithuania,Feelingsafewalkingaloneatnight,55.9
+822,Luxembourg,Feelingsafewalkingaloneatnight,75.8
+823,Mexico,Feelingsafewalkingaloneatnight,41.8
+824,Netherlands,Feelingsafewalkingaloneatnight,82.0
+825,New Zealand,Feelingsafewalkingaloneatnight,65.7
+826,Norway,Feelingsafewalkingaloneatnight,90.1
+827,Poland,Feelingsafewalkingaloneatnight,67.3
+828,Portugal,Feelingsafewalkingaloneatnight,73.4
+829,Slovak Republic,Feelingsafewalkingaloneatnight,63.5
+830,Slovenia,Feelingsafewalkingaloneatnight,86.1
+831,Spain,Feelingsafewalkingaloneatnight,82.1
+832,Sweden,Feelingsafewalkingaloneatnight,75.6
+833,Switzerland,Feelingsafewalkingaloneatnight,85.3
+834,Turkey,Feelingsafewalkingaloneatnight,59.8
+835,United Kingdom,Feelingsafewalkingaloneatnight,77.7
+836,United States,Feelingsafewalkingaloneatnight,73.9
+837,Brazil,Feelingsafewalkingaloneatnight,35.6
+838,Russia,Feelingsafewalkingaloneatnight,52.8
+839,South Africa,Feelingsafewalkingaloneatnight,36.1
+840,Australia,Homiciderate,1.1
+841,Austria,Homiciderate,0.5
+842,Belgium,Homiciderate,1.0
+843,Canada,Homiciderate,1.3
+844,Chile,Homiciderate,4.2
+845,Colombia,Homiciderate,24.5
+846,Czech Republic,Homiciderate,0.5
+847,Denmark,Homiciderate,0.6
+848,Estonia,Homiciderate,3.1
+849,Finland,Homiciderate,1.3
+850,France,Homiciderate,0.5
+851,Germany,Homiciderate,0.5
+852,Greece,Homiciderate,0.8
+853,Hungary,Homiciderate,1.0
+854,Iceland,Homiciderate,0.5
+855,Ireland,Homiciderate,0.7
+856,Israel,Homiciderate,1.8
+857,Italy,Homiciderate,0.6
+858,Japan,Homiciderate,0.2
+859,Korea,Homiciderate,1.0
+860,Latvia,Homiciderate,4.8
+861,Lithuania,Homiciderate,3.4
+862,Luxembourg,Homiciderate,0.6
+863,Mexico,Homiciderate,18.1
+864,Netherlands,Homiciderate,0.6
+865,New Zealand,Homiciderate,1.3
+866,Norway,Homiciderate,0.4
+867,Poland,Homiciderate,0.7
+868,Portugal,Homiciderate,1.0
+869,Slovak Republic,Homiciderate,0.8
+870,Slovenia,Homiciderate,0.6
+871,Spain,Homiciderate,0.6
+872,Sweden,Homiciderate,0.9
+873,Switzerland,Homiciderate,0.6
+874,Turkey,Homiciderate,1.4
+875,United Kingdom,Homiciderate,0.2
+876,United States,Homiciderate,5.5
+877,Brazil,Homiciderate,26.7
+878,Russia,Homiciderate,9.6
+879,South Africa,Homiciderate,13.7
+880,Australia,Employeesworkingverylonghours,13.04
+881,Austria,Employeesworkingverylonghours,6.66
+882,Belgium,Employeesworkingverylonghours,4.75
+883,Canada,Employeesworkingverylonghours,3.69
+884,Chile,Employeesworkingverylonghours,9.72
+885,Colombia,Employeesworkingverylonghours,26.56
+886,Czech Republic,Employeesworkingverylonghours,5.65
+887,Denmark,Employeesworkingverylonghours,2.34
+888,Estonia,Employeesworkingverylonghours,2.42
+889,Finland,Employeesworkingverylonghours,3.81
+890,France,Employeesworkingverylonghours,7.67
+891,Germany,Employeesworkingverylonghours,4.26
+892,Greece,Employeesworkingverylonghours,6.42
+893,Hungary,Employeesworkingverylonghours,3.03
+894,Iceland,Employeesworkingverylonghours,15.06
+895,Ireland,Employeesworkingverylonghours,5.25
+896,Israel,Employeesworkingverylonghours,15.45
+897,Italy,Employeesworkingverylonghours,4.11
+898,Japan,Employeesworkingverylonghours,7.951315789
+899,Korea,Employeesworkingverylonghours,7.951315789
+900,Latvia,Employeesworkingverylonghours,1.27
+901,Lithuania,Employeesworkingverylonghours,0.54
+902,Luxembourg,Employeesworkingverylonghours,3.82
+903,Mexico,Employeesworkingverylonghours,28.7
+904,Netherlands,Employeesworkingverylonghours,0.42
+905,New Zealand,Employeesworkingverylonghours,15.11
+906,Norway,Employeesworkingverylonghours,2.93
+907,Poland,Employeesworkingverylonghours,5.95
+908,Portugal,Employeesworkingverylonghours,8.27
+909,Slovak Republic,Employeesworkingverylonghours,4.14
+910,Slovenia,Employeesworkingverylonghours,4.39
+911,Spain,Employeesworkingverylonghours,4.01
+912,Sweden,Employeesworkingverylonghours,1.07
+913,Switzerland,Employeesworkingverylonghours,0.37
+914,Turkey,Employeesworkingverylonghours,32.64
+915,United Kingdom,Employeesworkingverylonghours,12.15
+916,United States,Employeesworkingverylonghours,11.09
+917,Brazil,Employeesworkingverylonghours,7.13
+918,Russia,Employeesworkingverylonghours,0.14
+919,South Africa,Employeesworkingverylonghours,18.12
+920,Australia,Timedevotedtoleisureandpersonalcare,14.35
+921,Austria,Timedevotedtoleisureandpersonalcare,14.55
+922,Belgium,Timedevotedtoleisureandpersonalcare,15.7
+923,Canada,Timedevotedtoleisureandpersonalcare,14.56
+924,Chile,Timedevotedtoleisureandpersonalcare,15.08454545
+925,Colombia,Timedevotedtoleisureandpersonalcare,15.08454545
+926,Czech Republic,Timedevotedtoleisureandpersonalcare,15.08454545
+927,Denmark,Timedevotedtoleisureandpersonalcare,15.87
+928,Estonia,Timedevotedtoleisureandpersonalcare,14.9
+929,Finland,Timedevotedtoleisureandpersonalcare,15.17
+930,France,Timedevotedtoleisureandpersonalcare,16.36
+931,Germany,Timedevotedtoleisureandpersonalcare,15.62
+932,Greece,Timedevotedtoleisureandpersonalcare,15.08454545
+933,Hungary,Timedevotedtoleisureandpersonalcare,15.08454545
+934,Iceland,Timedevotedtoleisureandpersonalcare,15.08454545
+935,Ireland,Timedevotedtoleisureandpersonalcare,15.08454545
+936,Israel,Timedevotedtoleisureandpersonalcare,15.08454545
+937,Italy,Timedevotedtoleisureandpersonalcare,16.47
+938,Japan,Timedevotedtoleisureandpersonalcare,15.08454545
+939,Korea,Timedevotedtoleisureandpersonalcare,14.7
+940,Latvia,Timedevotedtoleisureandpersonalcare,13.83
+941,Lithuania,Timedevotedtoleisureandpersonalcare,15.08454545
+942,Luxembourg,Timedevotedtoleisureandpersonalcare,15.08454545
+943,Mexico,Timedevotedtoleisureandpersonalcare,15.08454545
+944,Netherlands,Timedevotedtoleisureandpersonalcare,15.08454545
+945,New Zealand,Timedevotedtoleisureandpersonalcare,14.87
+946,Norway,Timedevotedtoleisureandpersonalcare,15.56
+947,Poland,Timedevotedtoleisureandpersonalcare,14.42
+948,Portugal,Timedevotedtoleisureandpersonalcare,15.08454545
+949,Slovak Republic,Timedevotedtoleisureandpersonalcare,15.08454545
+950,Slovenia,Timedevotedtoleisureandpersonalcare,14.75
+951,Spain,Timedevotedtoleisureandpersonalcare,15.93
+952,Sweden,Timedevotedtoleisureandpersonalcare,15.18
+953,Switzerland,Timedevotedtoleisureandpersonalcare,15.08454545
+954,Turkey,Timedevotedtoleisureandpersonalcare,14.79
+955,United Kingdom,Timedevotedtoleisureandpersonalcare,14.92
+956,United States,Timedevotedtoleisureandpersonalcare,14.44
+957,Brazil,Timedevotedtoleisureandpersonalcare,15.08454545
+958,Russia,Timedevotedtoleisureandpersonalcare,15.08454545
+959,South Africa,Timedevotedtoleisureandpersonalcare,14.92

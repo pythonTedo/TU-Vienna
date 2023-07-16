@@ -1,0 +1,268 @@
+---
+title: "intermediate-importing-data"
+author: "Teodor Chakarov"
+date: '2022-03-24'
+output: 
+  pdf_document:
+    toc: TRUE
+---
+
+####################
+# Tutorium in R 
+####################
+## Intermediate Importing data with R
+### Exercise Intermediate to Importing Data in R - Number 2
+### By: Teodor Chakarov 12141198
+
+## Initialize MySQL
+
+con is MySql connection object
+```{r}
+library(DBI)
+perl<- "C:\\Users\\tedoc\\OneDrive\\Dokumente\\R\\win-library\\4.1\\rtools42\\usr\\bin\\perl5.32.1.exe"
+
+con <- dbConnect(RMySQL::MySQL(), 
+                 dbname = "tweater", 
+                 host = "courses.csrrinzqubik.us-east-1.rds.amazonaws.com", 
+                 port = 3306,
+                 user = "student",
+                 password = "datacamp")
+
+tables <- dbListTables(con)
+
+str(tables)  # view all tables
+```
+To import user table we use:
+```{r}
+users <- dbReadTable(con, "users")
+print(users)
+```
+
+To import all tables at once:
+```{r}
+table_names <- dbListTables(con)
+tables <- lapply(table_names, dbReadTable, conn = con)
+print(table_names)
+print(tables)
+```
+
+## Queries in MySQL
+
+Import tweat_id column of comments where user_id is 1: elisabeth
+```{r}
+elisabeth <- dbGetQuery(con, "SELECT tweat_id FROM comments WHERE user_id = 1")
+print(elisabeth)
+```
+Import tweets latest than 2015-09-21
+```{r}
+latest <- dbGetQuery(con, "SELECT post FROM tweats WHERE date > '2015-09-21'")
+print(latest)
+```
+
+Select specific information of an object
+```{r}
+specific <- dbGetQuery(con, "Select message From comments Where tweat_id = 77 AND user_id > 4")
+print(specific)
+```
+
+Check len of chars with CHAR_LENGTH()
+```{r}
+short <- dbGetQuery(con, "Select id, name From users Where CHAR_LENGTH(name)< 5")
+print(short)
+```
+
+Fetching the data
+```{r}
+res <- dbSendQuery(con, "SELECT * FROM comments WHERE user_id > 4")
+print(res)
+```
+
+```{r}
+dbFetch(res, n = 2)
+dbFetch(res)
+print(res)
+```
+```{r}
+#dbClearResult(res)
+```
+## HTTP requests
+
+Get the data via HTTP GET request
+
+```{r}
+library("readr")
+
+# Import the csv file: pools
+url_csv <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/swimming_pools.csv"
+pools <- read_csv(url_csv)
+
+# Import the txt file: potatoes
+url_delim <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/potatoes.txt"
+potatoes <- read_tsv(url_delim)
+
+print(pools)
+print(potatoes)
+```
+
+For secure connection to **https** we use **read.csv()**
+
+To dowlnoad data use:
+```{r}
+library(readxl)
+library(gdata)
+
+url_xls <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/latitude.xls"
+excel_gdata <- read.xls(url_xls, perl = perl)
+print(excel_gdata)
+```
+To workaround reading excel file with read_excel() we need to:
+```{r}
+download.file(url_xls, destfile = "local_latitude.xls") #download file locally
+
+#excel_readxl <- read_excel("local_latitude.xls") #read it
+```
+Download file and read it as RData file
+
+```{r}
+url_rdata <- "https://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/wine.RData"
+download.file(url_rdata, destfile = "wine_local.RData")
+load("wine_local.RData")
+
+summary(wine)
+```
+Get content of HTTP request
+```{r}
+library("httr")
+url <- "http://www.example.com/"
+resp <- GET(url)
+
+print(resp)
+```
+```{r}
+raw_content <- content(as = "raw", resp)
+head(raw_content)
+```
+
+## API and JSON
+
+Read JSON data
+```{r}
+library("jsonlite")
+wine_json <- '{"name":"Chateau Migraine", "year":1997, "alcohol_pct":12.4, "color":"red", "awarded":false}'
+
+wine <- fromJSON(wine_json)
+str(wine)
+```
+
+```{r}
+url_sw4 <- "http://www.omdbapi.com/?apikey=72bc447a&i=tt0076759&r=json"
+url_sw3 <- "http://www.omdbapi.com/?apikey=72bc447a&i=tt0121766&r=json"
+
+sw4 <- fromJSON(url_sw4)
+sw3 <- fromJSON(url_sw3)
+
+# Print out the Title element of both lists
+sw4$Title
+sw3$Title
+```
+```{r}
+# Is the release year of sw4 later than sw3?
+sw4$Year > sw3$Year
+```
+```{r}
+print(sw4)
+```
+Build from Json object 
+```{r}
+# Challenge 1
+json1 <- '[1, 2, 3, 4, 5, 6]'
+fromJSON(json1)
+
+# Challenge 2
+json2 <- '{"a": [1, 2, 3], "b": [4, 5, 6]}'
+fromJSON(json2)
+```
+```{r}
+# Challenge 1
+json1 <- '[[1, 2], [3, 4]]'
+fromJSON(json1)
+
+# Challenge 2
+json2 <- '[{"a": 1, "b": 2}, {"a": 3, "b": 4}, {"a": 5, "b": 6}]'
+fromJSON(json2)
+```
+
+Convert the data to JSON
+```{r}
+url_csv <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/water.csv"
+
+# Import the .csv file located at url_csv
+water <- read.csv(url_csv, stringsAsFactors=FALSE)
+
+# Convert the data file according to the requirements
+water_json <- toJSON(water)
+print(water_json)
+```
+Minify and prettify JSON
+```{r}
+pretty_json <- toJSON(mtcars, pretty = TRUE)
+
+# Print pretty_json
+#pretty_json - style the json one above the other
+
+# Minify pretty_json: mini_json
+mini_json <- minify(pretty_json)
+
+# Print mini_json
+mini_json
+```
+## Importing data from other sources (SAS, STATA, SPSS)
+### With haven package
+
+library("haven")
+1. read_sas()
+
+2. Import from STATA
+```{r}
+library("haven")
+
+sugar <- read_dta("http://assets.datacamp.com/production/course_1478/datasets/trade.dta")
+
+# Structure of sugar
+str(sugar)
+
+# Convert values in Date column to dates
+sugar$Date <- as.Date(as_factor(sugar$Date))
+
+# Structure of sugar again
+str(sugar)
+```
+```{r}
+plot(sugar$Import, sugar$Weight_I)
+```
+
+3. Import data from SPSS with read_sav()
+
+
+```{r}
+# Import SPSS data from the URL: work
+work <- read_sav("http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/employee.sav")
+
+summary(work$GENDER)
+```
+```{r}
+# Convert work$GENDER to a factor
+work$GENDER <- as_factor(work$GENDER)
+summary(work$GENDER)
+```
+### With foreign package
+
+1. From STATA
+  read.dta("florida.dta")
+  
+The arguments you will use most often are **convert.dates**, **convert.factors**, **missing.type** and **convert.underscore**
+
+2. Form SPSS
+  read.spss("international.sav", to.data.frame=TRUE)
+  boxplot(demo$gdp)
+

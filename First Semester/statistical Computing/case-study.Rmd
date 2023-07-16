@@ -1,0 +1,237 @@
+---
+title: "Case Study"
+author: "Teodor Chakarov"
+date: '2022-04-19'
+output: pdf_document
+---
+
+
+### First task: Ratio of Fibonacci numbers
+Firstly, we create the Fibonacci number generator function, which will retun array with values.(fibonacci numbers)
+After that we have to put them inside second function, which returns sequence after diciding the next Fibonacci number with the curren one.
+
+The parameters are: number (is the number of results that we want) and fib_numbers(the array of numbers from the Fibonacci sequence).
+
+```{r}
+FibFunc <- function(n) {
+  Fib <- c(1,1)
+  if(n==1){
+    return(Fib[1])
+  }else if(n==2){
+    return(Fib)
+    }else{
+    for (i in 3:(n+1)) {
+      Fib[i] <- Fib[i-1] + Fib[i-2]
+    }
+  }
+return(Fib)
+}
+
+numbers = FibFunc(5)
+```
+
+1. While Loop funciton:
+```{r}
+# Fibonacci numbers using recursive relation
+while_funct <-function(number, fib_numbers){
+  my_vec <- c()
+  prevNum<- fib_numbers[1]
+  nextNum<-prevNum
+  # counter var
+  count <- 1 
+  while(count <= number) {
+    prevNum=nextNum
+    nextNum=fib_numbers[count+1]
+    my_vec <- c(my_vec, nextNum/prevNum)
+    count=count+1
+  }
+return (my_vec)
+}
+print(numbers)
+while_funct(5, numbers)
+```
+
+
+2. For Loop function:
+```{r}
+for_funct <- function(number, fib_numbers){
+  my_vec <- c()
+  PrevNum<-fib_numbers[1]
+  NextNum<-PrevNum
+  for(i in 1:(number))
+  {
+    PrevNum=NextNum
+    NextNum=fib_numbers[i+1]
+    my_vec <- c(my_vec, NextNum/PrevNum)
+      }
+  return (my_vec)
+}
+for_funct(5, numbers)
+```
+
+To see how **for** and **while** loops are doing in terms of speed, i used microbenchmark library: 
+```{r}
+library(microbenchmark)
+
+nums <- 1000
+fib_nums = FibFunc(nums)
+
+microbenchmark("while_funct(n = 100)" = {
+  x <- while_funct(100, fib_nums)
+},
+  "for_funct(n = 100)" = {
+  y <- for_funct(100, fib_nums)
+  },
+"while_funct(n = 1000)" = {
+  x <- while_funct(1000, fib_nums)
+},
+"for_funct(n = 1000)" = {
+  x <- for_funct(1000, fib_nums)
+}, times=1, unit = "milliseconds")
+```
+the results are showing that for n = 100, both functions are equally fast, but for higher number **n**, **while** loop is doing better in therms of time.
+
+
+```{r}
+res<-microbenchmark(
+vecfor<-c(for_funct(100, fib_nums)))
+
+ plot(vecfor, type="l", lwd=3)
+```
+From this plot we can see that near the 10th Fibonacci number the values from the division have the same result.
+
+
+### The Golden Ration
+We have to examine the given function of n=1000. The variable Fi is equal to the given equation. And 2 vectors are created. 
+They will be used for both parts of the given relationship in the exercise. In the for loop the vector LeftPart is filled with the results after the execution of Fi^(i+1) and the vector RightPart is filled with the results after the execution of Fi^(i) + Fi^(i-1).  
+The two parts of the equation are compared with "==" sign. 
+
+```{r}
+n<-1000
+Fi<-(sqrt(5)+1)/2
+LeftPart<-c()
+RightPart<-c()
+for (i in 1:n) {
+  LeftPart<-c(LeftPart,round(Fi^(i+1)))
+
+  RightPart<-c(RightPart,round((Fi^(i) + Fi^(i-1))))
+}
+
+LeftPart==RightPart
+
+```
+
+After that a vector Check is created. It is used in the for function where the values between LeftPart and RightPart are compared with the function all.equal(). If the values are equal in the Check vector is written True else it is written False.  
+Alter execution of this code we can observe that the "==" comparison is much more accurate than the all.equal function, which shows if the values are nearly equal.
+
+```{r}
+Check<-c()
+for(i in 1:n){
+
+  if(all.equal(LeftPart[i], RightPart[i])) {
+    Check<-c(Check,"TRUE")
+  } else {
+    Check<-c(Check,"FALSE")
+  }
+}
+print(Check)
+```
+
+
+
+### The Game of crabs
+```{r}
+x<-floor(runif(2, min=1, max=7))# floor rounds 
+
+if (sum(x)==7 | sum(x)==11){
+  print("You win! With number: " + x)
+  sum(x)
+}else{
+y<-c()
+  while(sum(x)!=sum(y) | sum(y)==7 | sum(y)==11){
+    y<-floor(runif(2, min=1, max=7))
+    if(sum(y)==7 | sum(y)==11){
+      print("You lose!")
+      print(paste(sum(x),"--> ", sum(y)))
+    }else if(sum(y)==sum(x)){
+      print("You win 2!")
+      print(paste(sum(x),"--> ", sum(y)))
+    }
+  }
+  
+  }
+```
+
+
+### Readable and efficient code
+
+
+```{r}
+set.seed(1)
+
+foobar0<- function(x, z){
+  if (sum(x >= .001) < 1) {
+    stop("step 1 requires 1 observation(s) with value >= .001")
+  }
+  fit <- lm(x ~ z)
+  r <- fit$residuals
+  x <- sin(r) + .01
+  if (sum(x >= .002) < 2) {
+    stop("step 2 requires 2 observation(s) with value >= .002")
+  }
+  fit <- lm(x ~ z)
+  r <- fit$residuals
+  x <- 2 * sin(r) + .02
+  if (sum(x >= .003) < 3) {
+    stop("step 3 requires 3 observation(s) with value >= .003")
+  }
+  fit <- lm(x ~ z)
+  r <- fit$residuals
+  x <- 3 * sin(r) + .03
+  if (sum(x >= .004) < 4) {
+    stop("step 4 requires 4 observation(s) with value >= .004")
+  }
+  fit <- lm(x ~ z)
+  r <- fit$residuals
+  x <- 4 * sin(r) + .04
+  return(x)
+}
+
+x <- rnorm(100)
+z <- rnorm(100)
+q<-foobar0(x,z)
+```
+
+
+Task 2: Add repetitive code as function
+
+```{r}
+set.seed(1)
+
+repetitive_function <- function(x, z){
+  
+  for(i in 1:4){
+  if (sum(x >= (i/1000)) < i) {
+       stop(paste("step ", i, " requires ", i ," observation(s) with value >= ",i))
+  }
+    fit <- lm(x ~ z)
+     r <- fit$residuals
+     x <- i*sin(r) + (i/100)
+  }
+  return(x)
+}
+ set.seed(1)
+ x <- rnorm(100)
+ z <- rnorm(100)
+ w<-repetitive_function(x,z)
+```
+
+
+The result of the execution of all_equal is TRUE, which means that the values are similar.
+```{r}
+all.equal(w,q)
+```
+
+
+
+

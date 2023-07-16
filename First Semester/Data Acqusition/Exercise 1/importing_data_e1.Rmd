@@ -1,0 +1,266 @@
+---
+title: "importing_data_e1"
+author: "Teodor Chakarov"
+date: '2022-03-24'
+output: 
+  pdf_document:
+    toc: TRUE
+---
+####################
+# Tutorium in R 
+####################
+### Importing data with R
+#### Exercise Introduction to Importing Data in R - Number 1
+#### By: Teodor Chakarov 12141198
+
+import csv
+```{r}
+pools <- read.csv("swimming_pools.csv")
+str(pools)
+```
+
+stringsAsFactors convert strings columns in readable values
+```{r}
+pools = read.csv("swimming_pools.csv", stringsAsFactors=FALSE)
+```
+
+
+Import txt file, setting separator by TABS, removing the header and give us an overveiw of the data
+```{r}
+hotdogs = read.delim("hotdogs.txt", sep="\t", header = FALSE)
+summary(hotdogs)
+```
+
+Show the path of the file and read the file
+```{r}
+path <- file.path("hotdogs.txt")
+hotdogs <- read.table(path, 
+                      sep = "", 
+                      col.names = c("type", "calories", "sodium"))
+
+
+```
+
+
+Finish the read.delim() call, setting up the names of the columns
+```{r}
+hotdogs <- read.delim("hotdogs.txt", header = FALSE, col.names = c("type", "calories", "sodium"))
+lily <- hotdogs[which.min(hotdogs$calories), ]
+print(lily)
+```
+Select the observation with the most sodium: tom
+
+```{r}
+tom <- hotdogs[which.max(hotdogs$sodium), ]
+print(tom)
+```
+
+```{r}
+library(readr)
+
+hotdogs2 <- read.delim("hotdogs.txt", header = FALSE, 
+                       col.names = c("type", "calories", "sodium"),
+                       colClasses = c("factor", "NULL", "numeric"))
+
+properties <- c("area", "temp", "size", "storage", "method",
+                "texture", "flavor", "moistness")
+
+potatoes <- read_tsv("potatoes.txt", col_names=properties)
+
+head(potatoes)
+
+```
+
+
+Skipping the first 2 observations
+
+```{r}
+potatoes_fragment <- read_tsv("potatoes.txt", skip = 2, n_max = 3, col_names = properties)
+head(potatoes_fragment)
+```
+
+Set collector to for setting types of the columns
+```{r}
+fac <- col_factor(levels = c("Beef", "Meat", "Poultry"))
+int <- col_integer()
+hotdogs_factor <- read_tsv("hotdogs.txt",
+                           col_names = c("type", "calories", "sodium"),
+                           col_types = list(fac,int,int))
+
+# Before
+summary(hotdogs) #  type: Class :character  Mode  :character
+
+# After
+summary(hotdogs_factor)# type: Beef: 20, Meat: 17, Poultry: 17
+```
+
+## Visulization
+```{r}
+
+library(data.table) 
+potatoes <- fread("potatoes.csv") # easy and fast to use for importing data
+potatoes <- fread("potatoes.csv", select=c("texture", "moistness"))
+
+# Plot texture (x) and moistness (y) of potatoes
+plot(x=potatoes$texture, y=potatoes$moistness)
+```
+```
+selecting only the columns we need
+
+fread("path/to/file.txt", drop = 2:4)
+fread("path/to/file.txt", select = c(1, 5))
+fread("path/to/file.txt", drop = c("b", "c", "d"))
+fread("path/to/file.txt", select = c("a", "e"))
+```
+The class of the result of fread() is both data.table and data.frame. read_csv() creates an object with three classes: tbl_df, tbl and data.frame
+
+## Working with Excel
+This package is on heavy development -> gdata is more reliable
+```{r}
+library(readxl)
+excel_sheets("urbanpop.xlsx") # names of the sheets in the excel file
+```
+### Read the sheets, one by one
+```{r}
+pop_1 <- read_excel("urbanpop.xlsx", sheet = 1)
+pop_2 <- read_excel("urbanpop.xlsx", sheet = 2)
+pop_3 <- read_excel("urbanpop.xlsx", sheet = 3)
+```
+
+### Put pop_1, pop_2 and pop_3 in a list: pop_list
+```{r}
+pop_list <- list(pop_1, pop_2, pop_3)
+str(pop_list)
+```
+
+Read all Excel sheets with lapply()
+```{r}
+pop_list <- lapply(excel_sheets("urbanpop.xlsx"), read_excel, path = "urbanpop.xlsx")
+
+str(pop_list)
+```
+
+Setting column names using loop
+```{r}
+cols <- c("country", paste0("year_", 1960:1966))
+pop_b <- read_excel("urbanpop_nonames.xlsx", col_names = cols)
+```
+
+Import the second sheet of urbanpop.xlsx, skipping the first 21 rows: urbanpop_sel
+```{r}
+urbanpop_sel <- read_excel("urbanpop.xlsx", skip=21, col_names=FALSE, sheet = 2)
+head(urbanpop_sel, n=1)
+```
+
+
+```{r}
+library(gdata)
+perl<- "C:\\Users\\tedoc\\OneDrive\\Dokumente\\R\\win-library\\4.1\\rtools42\\usr\\bin\\perl5.32.1.exe"
+urban_pop <- read.xls("urbanpop.xls", sheet = "1967-1974", perl = perl)
+head(urban_pop, n = 11)
+```
+
+```{r}
+columns <- c("country", paste0("year_", 1967:1974))
+
+
+urban_pop <- read.xls("urbanpop.xls", sheet = 2,
+                      skip = 50, header = FALSE, stringsAsFactors = FALSE,
+                      col.names = columns, perl = perl)
+
+head(urban_pop, n =10)
+
+```
+
+
+Import 3 different sheets
+```{r message=FALSE, warning=FALSE}
+
+path <- "urbanpop.xls"
+urban_sheet1 <- read.xls(path, sheet = 1, stringsAsFactors = FALSE, perl = perl)
+urban_sheet2 <- read.xls(path, sheet = 2, stringsAsFactors = FALSE, perl = perl)
+urban_sheet3 <- read.xls(path, sheet = 3, stringsAsFactors = FALSE, perl = perl)
+```
+
++ Combining the tables but dropping the first colums of 2 and 3
+
+```{r}
+urban <- cbind(urban_sheet1, urban_sheet2[-1], urban_sheet3[-1])
+
+```
+
++ Remove all rows with NANs from urban
+```{r}
+urban_clean <- na.omit(urban)
+```
+
+
+## Build a "bridge" between your Excel file and your R session.
+```{r}
+library("XLConnect")
+
+my_book <- loadWorkbook("urbanpop.xlsx")
+class(my_book)
+my_book <- loadWorkbook("urbanpop.xlsx")
+```
+
+List the sheets in my_book
+
+```{r}
+getSheets(my_book)
+
+# Import the second sheet in my_book
+readWorksheet(my_book, sheet = 2)
+```
+
+
+## Build connection to urbanpop.xlsx
+```{r}
+my_book <- loadWorkbook("urbanpop.xlsx")
+```
+Import columns 3, 4, and 5 from second sheet in my_book: urbanpop_sel
+
+```{r}
+urbanpop_sel <- readWorksheet(my_book, sheet = 2, startCol = 3, endCol = 5)
+```
+
+Import first column from second sheet in my_book: countries
+```{r}
+countries <- readWorksheet(my_book, sheet = 2, startCol = 1, endCol = 1)
+```
+
+cbind() urbanpop_sel and countries together: selection
+
+```{r}
+selection <- cbind(countries, urbanpop_sel)
+
+# create new sheets
+createSheet(my_book, name="data_summary")
+```
+
+```{r}
+createSheet(my_book, "data_summary") # Add a worksheet to my_book, named "data_summary"
+```
+
+## Create data frame: summ
+```{r}
+sheets <- getSheets(my_book)[1:3]
+dims <- sapply(sheets, function(x) dim(readWorksheet(my_book, sheet = x)), USE.NAMES = FALSE)
+summ <- data.frame(sheets = sheets,
+                   nrows = dims[1, ],
+                   ncols = dims[2, ])
+writeWorksheet(my_book, summ, "data_summary") # Add data in summ to "data_summary" sheet
+
+saveWorkbook(my_book, "summary.xlsx") # Save workbook as summary.xlsx
+
+renameSheet(my_book, "data_summary", "summary") # Rename "data_summary" sheet to "summary"
+
+getSheets(my_book) # Print out sheets of my_book
+```
+```{r}
+saveWorkbook(my_book, "renamed.xlsx")
+removeSheet(my_book, 4)
+
+saveWorkbook(my_book, "clean.xlsx") # Save workbook to "renamed.xlsx"
+
+```

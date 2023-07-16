@@ -1,0 +1,65 @@
+body {
+    padding-left: 5em;
+    font-family: Calibri, Arial, Helvetica, sans-serif;
+    color: #222222;
+    background-color: hsl(0, 100%, 99%);
+    margin: 0px;
+}
+
+.container {
+    display: table-cell;
+    vertical-align:top;
+    height: 00px;
+    padding: 10px;
+    border: 0px solid black;
+    text-align: center;
+    font-size: large;
+}
+
+rect {
+    fill: steelblue;
+    font-size: large;
+  }
+
+#svg_scatter{
+    display: inline-block;
+}
+
+#svg_heatmap{
+    display: inline-block;
+}
+
+div.tooltip {
+    color: black;
+    position: absolute;
+    text-align: center;
+    width: 160px;
+    height: 50px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: orange;
+    border: 2px solid black;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+text{
+      font-size: 13px;
+      font-family: "Times New Roman";
+  }
+
+h1{
+    text-align: center;
+    font-family: "Times New Roman";
+}
+p{
+    text-align: center;
+}
+h3{
+    text-align: left;
+    font-family: "Times New Roman";
+}
+#svg_scatter, #svg_heatmap
+{
+    display:inline;
+}

@@ -1,0 +1,526 @@
+---
+title: "Analyzing survey data"
+author: "Teodor Chakarov"
+date: '2022-05-29'
+output: 
+  pdf_document:
+    latex_engine: xelatex
+    toc: TRUE
+---
+
+# Introduction to survey data
+
+```{r setup, include=FALSE}
+ce<-read.csv("https://assets.datacamp.com/production/repositories/1932/datasets/54e81635756ae4b5a0207b661586c108e6dc5566/ce.csv")
+library(ggplot2)
+library(tidyr)
+library(survey)
+library(dplyr)
+```
+
+```{r}
+# Construct a histogram of the weights
+ggplot(data = ce, mapping = aes(x = FINLWT21)) +
+    geom_histogram()
+```
+
+```{r}
+data(api)
+# Look at the apisrs dataset
+glimpse(apisrs)
+
+# Specify a simple random sampling for apisrs
+apisrs_design <- svydesign(data = apisrs, weights = ~pw, fpc = ~fpc, id = ~1)
+
+# Produce a summary of the design
+summary(apisrs_design)
+```
+
+```{r}
+# Glimpse the data
+glimpse(apistrat)
+
+# Summarize strata sample sizes
+apistrat %>%
+  count(stype)
+
+# Specify the design
+apistrat_design <- svydesign(data = apistrat, weights = ~pw, fpc = ~fpc, id = ~1, strata = ~stype)
+
+# Look at the summary information stored in the design object
+summary(apistrat_design)
+```
+
+```{r}
+# Glimpse the data
+glimpse(apiclus2)
+```
+
+```{r}
+# Specify the design
+apiclus_design <- svydesign(id = ~dnum + snum, data = apiclus2, weights = ~pw, fpc = ~fpc1 + fpc2)
+
+#Look at the summary information stored in the design object
+summary(apiclus_design)
+```
+
+## Comparing survey weights of different designs
+
+```{r}
+ggplot(data = apisrs,
+       mapping = aes(x = pw)) + 
+  geom_histogram()
+```
+
+```{r}
+ggplot(data = apistrat,
+       mapping = aes(x = pw)) + 
+  geom_histogram()
+```
+
+```{r}
+# Construct histogram of pw, for the cluster sample
+ggplot(data = apiclus2,
+       mapping = aes(x = pw)) + 
+  geom_histogram()
+```
+
+## Visualizing the impact of survey weights
+
+```{r}
+library(NHANES)
+
+data(NHANES)
+
+tab_weights <- NHANESraw %>%
+  group_by(Race1) %>%
+  summarize(avg_wt = mean(WTMEC2YR))
+
+#Print the table
+print(tab_weights)
+```
+
+```{r}
+# Specify the NHANES design
+NHANES_design <- svydesign(data = NHANESraw, strata = ~SDMVSTRA, id = ~SDMVPSU, nest = TRUE, weights = ~WTMEC2YR)
+
+# Print summary of design
+print(summary(NHANES_design))
+```
+```{r}
+# Number of clusters
+NHANESraw %>%
+  summarize(n_clusters = n_distinct(SDMVSTRA, SDMVPSU))
+
+# Sample sizes in clusters
+NHANESraw %>%
+  count(SDMVSTRA, SDMVPSU)
+```
+
+# Visualize categorical variable
+
+```{r}
+# Specify the survey design
+NHANESraw <- mutate(NHANESraw, WTMEC4YR = .5 * WTMEC2YR)
+NHANES_design <- svydesign(data = NHANESraw, strata = ~SDMVSTRA, id = ~SDMVPSU, nest = TRUE, weights = ~WTMEC2YR)
+
+# Determine the levels of Depressed
+levels(NHANESraw$Depressed)
+```
+
+```{r}
+# Specify the survey design
+NHANESraw <- mutate(NHANESraw, WTMEC4YR = .5 * WTMEC2YR)
+NHANES_design <- svydesign(data = NHANESraw, strata = ~SDMVSTRA, id = ~SDMVPSU, nest = TRUE, weights = ~WTMEC4YR)
+
+# Determine the levels of Depressed
+levels(NHANESraw$Depressed)
+
+# Construct a frequency table of Depressed
+tab_w <- svytable(~Depressed, design = NHANES_design)
+
+# Determine class of tab_w
+class(tab_w)
+
+# Display tab_w
+tab_w
+```
+
+```{r}
+# Add proportions to table
+tab_w <- tab_w %>%
+  as.data.frame() %>%
+  mutate(Prop = Freq/sum(Freq))
+
+# Create a barplot
+ggplot(data = tab_w,
+       mapping = aes(x = Depressed, y = Prop)) + 
+  geom_col()
+```
+## Creating contingency tables
+
+```{r}
+# Construct and display a frequency table
+tab_D <- svytable(~Depressed,
+           design = NHANES_design)
+tab_D
+```
+
+```{r}
+# Construct and display a frequency table
+tab_H <- svytable(~HealthGen,
+           design = NHANES_design)
+tab_H
+```
+
+```{r}
+# Construct and display a frequency table
+tab_DH <- svytable(~Depressed+HealthGen,
+           design = NHANES_design)
+tab_DH
+```
+
+```{r}
+# Add conditional proportions to tab_DH
+tab_DH_cond <- tab_DH %>%
+    as.data.frame() %>%
+    group_by(HealthGen) %>%
+    mutate(n_HealthGen = sum(Freq), Prop_Depressed = Freq/n_HealthGen) %>%
+    ungroup()
+# Print tab_DH_cond
+tab_DH_cond
+```
+
+```{r}
+# Create a segmented bar graph of the conditional proportions in tab_DH_cond
+ggplot(data = tab_DH_cond,
+       mapping = aes(x = HealthGen, y = Prop_Depressed, fill = Depressed)) + 
+  geom_col() + 
+  coord_flip()
+```
+
+```{r}
+# Estimate the totals for combos of Depressed and HealthGen
+tab_totals <- svytotal(x = ~interaction(Depressed, HealthGen),
+                     design = NHANES_design,
+                     na.rm = TRUE)
+
+# Print table of totals
+print(tab_totals)
+```
+
+
+```{r}
+# Estimate the means for combos of Depressed and HealthGen
+tab_means <- svymean(x = ~interaction(Depressed, HealthGen),
+              design = NHANES_design,
+              na.rm = TRUE)
+
+# Print table of means
+tab_means
+```
+
+## Inference for categorical variables
+
+```{r}
+# Run a chi square test between Depressed and HealthGen
+svychisq(~Depressed+HealthGen, 
+    design = NHANES_design, 
+    statistic = "Chisq")
+```
+
+```{r}
+# Construct a contingency table
+tab <-svytable(~HomeOwn+Education, design = NHANES_design) 
+
+# Add conditional proportion of levels of HomeOwn for each educational level
+tab_df <- as.data.frame(tab) %>%
+  group_by(Education) %>%
+  mutate(n_Education = sum(Freq), Prop_HomeOwn = Freq/n_Education) %>%
+  ungroup()
+
+# Create a segmented bar graph
+ggplot(data = tab_df,
+       mapping = aes(x = Education, y = Prop_HomeOwn, fill = HomeOwn)) + 
+  geom_col() + 
+  coord_flip()
+```
+
+```{r}
+# Run a chi square test
+svychisq(~HomeOwn+Education, 
+    design = NHANES_design, 
+    statistic = "Chisq")
+
+```
+
+# Exploring quantitative data
+
+```{r}
+svymean(x = ~SleepHrsNight, 
+        design = NHANES_design,
+        na.rm = TRUE)
+```
+
+```{r}
+# Compute the survey-weighted mean by Gender
+svyby(formula = ~SleepHrsNight, 
+      by = ~Gender, 
+      design = NHANES_design, 
+      FUN = svymean, 
+      na.rm = TRUE, 
+      keep.names = FALSE)
+```
+
+```{r}
+# Compute the survey-weighted quantiles
+svyquantile(x = ~SleepHrsNight, 
+            design = NHANES_design, 
+            na.rm = TRUE, 
+            quantiles = c(0.01, 0.25, 0.5, 0.75,0.99))
+```
+
+```{r}
+# Compute the survey-weighted quantiles by Gender
+svyby(formula = ~SleepHrsNight, 
+      by = ~Gender, 
+      design = NHANES_design, 
+      FUN = svyquantile, 
+      na.rm = TRUE, 
+      quantiles = 0.5, 
+      keep.rows = FALSE, 
+      keep.var = FALSE)
+```
+
+## Visualizing quantitative data
+
+```{r}
+# Compute the survey-weighted mean by Gender
+out <- svyby(formula = ~SleepHrsNight, 
+             by = ~Gender, 
+             design = NHANES_design, 
+             FUN = svymean, 
+             na.rm = TRUE, 
+             keep.names = FALSE)
+             
+# Construct a bar plot of average sleep by gender
+ggplot(data =out , mapping = aes(x=Gender, y=SleepHrsNight)) +
+  geom_col() + 
+  labs(y="Average Nightly Sleep")
+```
+
+```{r}
+# Add lower and upper columns to out
+out_col <- mutate(out, 
+                  lower = SleepHrsNight - 2*se, 
+                  upper = SleepHrsNight + 2*se)
+
+
+ggplot(data = out_col, 
+       mapping = aes(x = Gender, y = SleepHrsNight, 
+                     ymin = lower, ymax = upper)) +
+  geom_col(fill = "gold") +
+  labs(y = "Average Nightly Sleep") +
+  geom_errorbar(width = 0.7)
+```
+
+```{r}
+ggplot(data = NHANESraw,
+       mapping = aes(x=SleepHrsNight,weight=WTMEC4YR)) + 
+  geom_histogram(binwidth = 1,
+                 color = "white") +
+  labs(x = "Hours of Sleep")
+```
+
+```{r}
+ggplot(data = NHANESraw,
+       mapping = aes(x=SleepHrsNight,weight=WTMEC4YR)) + 
+  geom_histogram(binwidth = 0.5,
+                 color = "white") +
+  labs(x = "Hours of Sleep")
+```
+
+```{r}
+# Create a histogram with a set binwidth
+ggplot(data = NHANESraw,
+       mapping = aes(x=SleepHrsNight,weight=WTMEC4YR)) + 
+  geom_histogram(binwidth = 2,
+                 color = "white") +
+  labs(x = "Hours of Sleep")
+```
+
+```{r}
+NHANESraw %>%
+    filter(!is.na(SleepHrsNight), !is.na(Gender)) %>%
+    group_by(Gender) %>%
+    mutate(WTMEC4YR_std = WTMEC4YR/sum(WTMEC4YR)) %>%
+    ggplot(mapping = aes(x = SleepHrsNight, weight = WTMEC4YR_std)) + 
+        geom_density(bw = 0.6,  fill = "gold") +
+        labs(x = "Hours of Sleep") + 
+        facet_wrap(~Gender, labeller = "label_both")
+```
+
+```{r}
+svyttest(formula = SleepHrsNight~Gender,
+       design = NHANES_design)
+```
+
+```{r}
+out <- svyby(formula =~TotChol,
+           by = ~PhysActive, 
+           design = NHANES_design,
+           FUN = svymean, 
+           na.rm = TRUE, 
+           keep.names = FALSE)
+
+ggplot(data = out,
+       mapping = aes(x=PhysActive, y=TotChol)) +
+  geom_col()
+```
+```{r}
+# Run t test for difference in means of total cholesterol by whether or not active
+svyttest(formula = TotChol ~ PhysActive,
+         design = NHANES_design)
+```
+
+# Visualization with scatter plots
+
+```{r}
+# Create dataset with only 20 year olds
+NHANES20 <- filter(NHANESraw,
+                Age == 20)
+
+# Construct scatter plot
+ggplot(data = NHANES20, 
+       mapping = aes(x=Height, y=Weight)) + 
+    geom_point(alpha = 0.3) + 
+    guides(size = FALSE)
+```
+
+```{r}
+# Construct bubble plot
+ggplot(data = NHANES20, 
+       mapping = aes(x=Height, y=Weight, size=WTMEC4YR)) + 
+    geom_point(alpha = 0.3) + 
+    guides(size = FALSE)
+```
+
+```{r}
+ggplot(data = NHANES20,
+       mapping = aes(x= Height, y=Weight, color=WTMEC4YR)) + 
+    geom_point() + 
+    guides(color = FALSE)
+```
+
+```{r}
+ggplot(data = NHANES20,
+       mapping = aes(x= Height, y=Weight, alpha=WTMEC4YR)) + 
+    geom_point() + 
+    guides(alpha = FALSE)
+```
+
+```{r}
+ggplot(data = NHANES20,
+       mapping = aes(x=Height, y=Weight, size=WTMEC4YR, color=Gender)) + 
+    geom_point(alpha=0.3) + 
+    guides(size = FALSE)
+```
+
+```{r}
+# Add gender to plot
+ggplot(data = NHANES20,
+       mapping = aes(x=Height, y=Weight,alpha=WTMEC4YR, color=Gender)) + 
+    geom_point() + 
+    guides(alpha = FALSE)
+```
+
+```{r}
+# Bubble plot with linear of best fit
+ggplot(data = NHANESraw, mapping = aes(x = Height, y = Weight, size = WTMEC4YR)) + 
+  geom_point(alpha = 0.1) + 
+  guides(size = FALSE) + 
+  geom_smooth(method = "lm", se = FALSE, mapping = aes(weight=WTMEC4YR))
+```
+
+```{r}
+ggplot(data = NHANESraw, mapping = aes(x = Height, y = Weight, size = WTMEC4YR)) + 
+  geom_point(alpha = 0.1) + 
+  guides(size = FALSE) + 
+  geom_smooth(method = "lm", se = FALSE, mapping = aes(weight = WTMEC4YR)) +
+  geom_smooth(method = "lm", se = FALSE, mapping = aes(weight = WTMEC4YR), formula = y ~ poly(x, 2), color = "orange") +
+  geom_smooth(method = "lm", se = FALSE, mapping = aes(weight = WTMEC4YR), formula = y ~ poly(x, 3), color = "red")
+```
+
+
+```{r}
+ggplot(data = NHANES20, mapping = aes(x = Height, y = Weight, size = WTMEC4YR, color = Gender)) + 
+  geom_point(alpha = 0.1) + 
+  guides(size = FALSE) + 
+  geom_smooth(method = "lm", se = FALSE, linetype = 2)
+```
+
+```{r}
+# Add survey-weighted trend lines
+ggplot(data = NHANES20, mapping = aes(x = Height, y = Weight, size = WTMEC4YR, color = Gender)) + 
+  geom_point(alpha = 0.1) + 
+  guides(size = FALSE) + 
+  geom_smooth(method = "lm", se = FALSE, linetype = 2) + 
+  geom_smooth(method = "lm", se = FALSE, mapping = aes(weight = WTMEC4YR))
+```
+
+## Regression model
+
+```{r}
+# Subset survey design object to only include 20 year olds
+NHANES20_design <- subset(NHANES_design, Age == 20)
+
+# Build a linear regression model
+mod <- svyglm(Weight ~ Height, design = NHANES20_design)
+
+# Print summary of the model
+summary(mod)
+```
+
+```{r}
+# Build a linear regression model same slope
+mod1 <- svyglm(Weight ~ Height+Gender, design = NHANES20_design)
+
+# Print summary of the same slope model
+summary(mod1)
+```
+
+```{r}
+# Build a linear regression model different slopes
+mod2 <- svyglm(Weight ~ Height*Gender, design = NHANES20_design)
+
+# Print summary of the different slopes model
+summary(mod2)
+```
+
+```{r}
+# Plot BPDiaAve and BPSysAve by Diabetes and include trend lines
+drop_na(NHANESraw, Diabetes) %>%
+ggplot(mapping = aes(x=BPDiaAve, y=BPSysAve, size=WTMEC4YR, color=Diabetes)) + 
+    geom_point(alpha = 0.2) +  
+    guides(size = FALSE) + 
+    geom_smooth(method="lm", se = FALSE, mapping = aes(weight=WTMEC4YR))
+```
+```{r}
+mod1 <- svyglm(BPSysAve ~ BPDiaAve, design = NHANES_design)
+
+drop_na(NHANESraw, Diabetes) %>%
+ggplot(mapping = aes(x = BPDiaAve, y = BPSysAve, size = WTMEC4YR, color = Diabetes)) + 
+    geom_point(alpha = 0.2) + 
+    guides(size = FALSE) + 
+    geom_smooth(method = "lm", se = FALSE, mapping = aes(weight = WTMEC4YR))
+```
+
+```{r}
+# Build model with different slopes
+mod2 <- svyglm(BPSysAve ~ BPDiaAve * Diabetes, design = NHANES_design)
+
+
+# Summarize models
+summary(mod1)
+summary(mod2)
+```

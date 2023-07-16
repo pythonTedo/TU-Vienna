@@ -1,0 +1,437 @@
+---
+title: "Data_cleaning_e3"
+author: "Teodor Chakarov"
+date: '2022-03-28'
+output: 
+  pdf_document:
+    toc: TRUE
+---
+
+#################### 
+
+# Tutorium in R
+
+#################### 
+
+## Data Cleaning with R
+
+### Exercise Data Cleaning with R - Number 3
+
+### By: Teodor Chakarov 12141198
+
+## Converting data types and adding new column
+
+```{r}
+library(dplyr)
+library(assertive)
+library(stringr)
+library(ggplot2)
+library(lubridate)
+library(visdat)
+```
+
+Checking datatypes of our data set
+
+```{r}
+bike_share_rides <- readRDS(file = "bike_share_rides_ch1_1.rds")
+
+glimpse(bike_share_rides)
+```
+
+The summary of one column
+
+```{r}
+summary(bike_share_rides$user_birth_year)
+```
+
+```{r}
+# Convert user_birth_year to factor: user_birth_year_fct
+bike_share_rides <- bike_share_rides %>%
+  mutate(user_birth_year_fct = as.factor(user_birth_year))
+
+# Assert user_birth_year_fct is a factor
+assert_is_factor(bike_share_rides$user_birth_year_fct)
+
+# Summary of user_birth_year_fct
+summary(bike_share_rides$user_birth_year_fct)
+```
+
+```{r}
+glimpse(bike_share_rides)
+```
+
+We can see that we have new column which is factorial of the previous double column.
+
+## Trimming strings
+
+```{r}
+bike_share_rides <- bike_share_rides %>%
+  # Remove 'minutes' from duration: duration_trimmed
+  mutate(duration_trimmed = str_remove(duration, " minutes"), #add new col with removed str
+         # Convert duration_trimmed to numeric: duration_mins
+         duration_mins = as.numeric(duration_trimmed))
+
+# Glimpse at bike_share_rides
+glimpse(bike_share_rides)
+```
+
+```{r}
+# Assert duration_mins is numeric
+assert_is_numeric(bike_share_rides$duration_mins)
+
+# Calculate mean duration
+mean(bike_share_rides$duration_mins)
+```
+
+```{r}
+# Create breaks
+breaks <- c(min(bike_share_rides$duration_mins), 0, 1440, max(bike_share_rides$duration_mins))
+
+# Create a histogram of duration_min
+ggplot(bike_share_rides, aes(duration_mins)) +
+  geom_histogram(breaks = breaks)
+```
+
+## Working selecting data, duplicats
+
+Adding new column in which values above 1440 will be replaced with max 1440:
+
+```{r}
+# duration_min_const: replace vals of duration_min > 1440 with 1440
+bike_share_rides <- bike_share_rides %>%
+  mutate(duration_min_const = replace(duration_mins, duration_mins>1440, 1440))
+
+# Make sure all values of duration_min_const are between 0 and 1440
+assert_all_are_in_closed_range(bike_share_rides$duration_min_const, lower = 0, upper = 1440)
+```
+
+Convert datetime column and select the needed data
+
+```{r}
+# Convert date to Date type
+bike_share_rides <- bike_share_rides %>%
+  mutate(date = as.Date(date))
+
+# Filter for rides that occurred before or on today's date
+bike_share_rides_past <- bike_share_rides %>%
+  filter(date <= today())
+```
+
+Remove duplicated data
+
+```{r}
+#Count the number of full duplicates
+sum(duplicated(bike_share_rides))
+
+#Remove duplicates
+bike_share_rides_unique <- distinct(bike_share_rides)
+
+#Count the full duplicates in bike_share_rides_unique
+sum(duplicated(bike_share_rides_unique))
+```
+
+```{r}
+# Find duplicated ride_ids
+bike_share_rides %>% 
+  # Count the number of occurrences of each ride_id
+  count(ride_id) %>% 
+  # Filter for rows with a count > 1
+  filter(n > 1)
+```
+
+```{r}
+# Remove full and partial duplicates
+bike_share_rides_unique <- bike_share_rides %>%
+  # Only based on ride_id instead of all cols
+  distinct(ride_id, .keep_all = TRUE)
+```
+
+```{r}
+bike_share_rides_unique %>%
+  # Count the number of occurrences of each ride_id
+  count(ride_id) %>%
+  # Filter for rows with a count > 1
+  filter(n > 1)
+```
+
+Grouping by:
+
+```{r}
+bike_share_rides %>%
+  # Group by ride_id and date
+  group_by(ride_id, date) %>%
+  # Add duration_min_avg column
+  mutate(duration_min_avg = mean(duration_mins)) %>%
+  # Remove duplicates based on ride_id and date, keep all cols
+  distinct(ride_id, date, .keep_all = TRUE) %>%
+  # Remove duration_min column
+  select(-duration_mins)
+```
+
+```{r}
+sfo_survey <- readRDS(file = "sfo_survey_ch2_1.rds")
+```
+
+```{r}
+# Count the number of occurrences of dest_size
+sfo_survey %>%
+  count(dest_size)
+```
+
+```{r}
+# Count the number of occurrences of dest_size
+sfo_survey %>%
+  count(dest_size)
+```
+
+## String data manipulation
+
+Adding new column with trimmed whitespace and lowercase chars
+
+```{r}
+# Add new columns to sfo_survey
+sfo_survey <- sfo_survey %>%
+  # dest_size_trimmed: dest_size without whitespace
+  mutate(dest_size_trimmed = str_trim(dest_size),
+         # cleanliness_lower: cleanliness converted to lowercase
+         cleanliness_lower = str_to_lower(cleanliness))
+
+# Count values of dest_size_trimmed
+sfo_survey %>%
+  count(dest_size_trimmed)
+
+# Count values of cleanliness_lower
+sfo_survey %>%
+  count(cleanliness_lower)
+```
+
+When we have patterns, regex symbols, to escape them we use fixed():
+
+```{r}
+# Filter for rows with "(" or ")" in the phone column
+#sfo_survey %>%
+#  filter(str_detect(phone, fixed("(")) | str_detect(phone, fixed(")")))
+```
+
+Remove the unnecessary chars and add new column in which we get rid of "-"
+
+```{r}
+# Remove parentheses from phone column
+#phone_no_parens <- sfo_survey$phone %>%
+#  # Remove "("s
+#  str_remove_all(fixed("(")) %>%
+#  # Remove ")"s
+#  str_remove_all(fixed(")"))
+
+# Add phone_no_parens as column
+#sfo_survey %>%
+#  mutate(phone_no_parens = phone_no_parens,
+#  # Replace all hyphens in phone_no_parens with spaces
+#         phone_clean = str_replace_all(phone_no_parens,"-", " "))
+```
+
+Check if sting is = 12 and removing the invalid strings
+
+```{r}
+# Check out the invalid numbers
+#sfo_survey %>%
+#  filter(str_length(phone) != 12)
+
+# Remove rows with invalid numbers
+#sfo_survey %>%
+#  filter(str_length(phone) == 12)
+```
+
+## Data uniformity
+
+To change the format of the date column
+
+```{r}
+accounts <- readRDS(file = "ch3_1_accounts.rds")
+account_offices <- read.csv(file = "account_offices.csv")
+
+formats <- c("%Y-%m-%d", "%B %d, %Y")
+
+# Convert dates to the same format
+accounts %>%
+  mutate(date_opened_clean = parse_date_time(date_opened, formats))
+```
+
+```{r}
+head(account_offices)
+accounts %>%
+  left_join(account_offices, by = "id")
+```
+
+Visualizing data:
+
+```{r}
+# Scatter plot of opening date and total amount
+accounts %>%
+  ggplot(aes(x = date_opened, y = total)) +
+  geom_point()
+```
+
+Visualizing the data, after thet im joining the tables by id and converting if office in Tokyo -\> convert the currency to USD
+
+```{r}
+# Scatter plot of opening date and total amount
+accounts %>%
+  ggplot(aes(x = date_opened, y = total)) +
+  geom_point()
+
+# Left join accounts to account_offices by id
+accounts %>%
+  left_join(account_offices, by = "id") %>%
+  # Convert totals from the Tokyo office to USD
+  mutate(total_usd = ifelse(office == "Tokyo", total / 104, total)) %>%
+  # Scatter plot of opening date vs total_usd
+  ggplot(aes(x = date_opened, y = total_usd)) +
+    geom_point()
+```
+
+## Filter and validate data.
+
+```{r}
+# Find invalid totals
+#accounts %>%
+#  # theoretical_total: sum of the three funds
+#  mutate(theoretical_total = fund_A + fund_B + fund_C) %>%
+  # Find accounts where total doesn't match theoretical_total
+#  filter(theoretical_total != total)
+```
+
+Turn to numeric and then - todays date
+
+```{r}
+# Find invalid acct_age
+#accounts %>%
+  # theoretical_age: age of acct based on date_opened
+#  mutate(theoretical_age = floor(as.numeric(date_opened %--% today(), "years"))) %>%
+  # Filter for rows where acct_age is different from theoretical_age
+#  filter(theoretical_age != acct_age)
+```
+
+To visualize the missing data
+
+```{r}
+vis_miss(accounts)
+```
+
+```{r}
+# Visualize the missing values by column
+vis_miss(accounts)
+
+#accounts %>%
+  # missing_inv: Is inv_amount missing?
+ # mutate(missing_inv = is.na(inv_amount)) %>%
+  # Group by missing_inv
+#  group_by(missing_inv) %>%
+  # Calculate mean age for each missing_inv group
+#  summarize(avg_age = mean(age))
+
+# Sort by age and visualize missing vals
+#accounts %>%
+#  arrange(age) %>%
+#  vis_miss()
+```
+
+Remove nan values
+
+```{r}
+# Create accounts_clean
+#accounts_clean <- accounts %>%
+  # Filter to remove rows with missing cust_id
+#  filter(!is.na(cust_id))
+
+#accounts_clean
+```
+
+Create a new column called ***acct_amount_filled***, which contains the values of ***acct_amount***, except all NA values should be replaced with 5 times the amount in ***inv_amount***
+
+```{r}
+# Create accounts_clean
+#accounts_clean <- accounts %>%
+  # Filter to remove rows with missing cust_id
+#  filter(!is.na(cust_id)) %>%
+  # Add new col acct_amount_filled with replaced NAs
+#  mutate(acct_amount_filled = ifelse(is.na(acct_amount), inv_amount * 5, acct_amount))
+
+#accounts_clean
+
+
+# Assert that cust_id has no missing vals
+#assert_all_are_not_na(accounts_clean$cust_id)
+```
+
+## Comparing strings
+
+With:
+
+```{r}
+library("stringdist")
+stringdist("string1", "sting2", method="lcs")
+```
+
+Fixing typos:
+
+```{r}
+library(fuzzyjoin)
+zagat <- readRDS(file="zagat.rds")
+fodors <- readRDS(file="fodors.rds")
+
+# Count the number of each city variation
+zagat %>%
+  count(city)
+
+# Join and look at results
+#zagat %>%
+  # Left join based on stringdist using city and city_actual cols
+#  stringdist_left_join(city, by = c("city" = "city_actual")) %>%
+  # Select the name, city, and city_actual cols
+#  select(name, city, city_actual)
+```
+
+Pair blocking
+
+```{r}
+# Load reclin
+library(reclin)
+
+# Generate pairs with same city
+pair_blocking(zagat, fodors, blocking_var = "city")
+```
+
+```{r}
+# Generate pairs
+pair_blocking(zagat, fodors, blocking_var = "city") %>%
+  # Compare pairs by name using lcs()
+  compare_pairs(by = "name",
+                default_comparator = lcs())
+```
+
+```{r}
+# Generate pairs
+pair_blocking(zagat, fodors, blocking_var = "city") %>%
+  # Compare pairs by name, phone, addr
+  compare_pairs(by = c("name", "phone", "addr"),
+                default_comparator = jaro_winkler())
+```
+
+## Linkage process
+
+1.  Clean the datasets
+2.  Generate pairs of records
+3.  Compare and separate columns of each pair
+4.  Score pairs using summing and probability
+5.  Select pairs that are matches based on theis score
+6.  Link the datasets together
+
+```{r}
+# Create pairs
+#pair_blocking(zagat, fodors, blocking_var = "city") %>%
+  # Compare pairs
+#  compare_pairs(by = "name", default_comparator = jaro_winkler()) %>%
+  # Score pairs
+#  score_problink()
+```

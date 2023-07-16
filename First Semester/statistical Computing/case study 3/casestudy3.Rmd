@@ -1,0 +1,296 @@
+---
+title: "CaseStudy3"
+author: "Teodor Chakarov, 12141198"
+date: '2022-05-30'
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  pdf_document:
+    latex_engine: xelatex
+    toc: yes
+always_allow_html: yes
+---
+
+# Case Study 3 - Data Vizualization
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(forcats)
+library(plotly)
+```
+
+
+```{r}
+data <- read.csv("final_results.csv", sep=";")
+
+head(data)
+
+```
+
+```{r}
+sum(is.na(data))
+```
+
+```{r}
+data$Median_Age<- gsub(",", ".", data$Median_Age)
+data$Median_Age<-as.double(data$Median_Age)
+```
+
+
+```{r}
+developing<- data[data$Developed...Developing.Countries
+ == 'Developing', ]
+developed<- data[data$Developed...Developing.Countries
+ == 'Developed', ]
+head(developed)
+```
+## Task 1
+
+```{r}
+data%>%
+  ggplot(aes(x=Median_Age, color=Developed...Developing.Countries,
+             fill=Developed...Developing.Countries)) +
+  geom_density(alpha=0.5,size=1, color="black")+
+  theme(legend.position = "top", legend.title = element_blank())+
+  theme(axis.text.x = element_text(angle = 90))+
+  xlab("Median age of population")+
+  ggtitle("Median age between developed and developing countries")
+
+```
+
+We can see that in the developed countries we have more people between 40 and 45 years old. While in developin countries we have younger people which are spread on longer range (20-30 years old).
+
+
+## Task 2
+
+```{r}
+data$youth_unempl_rate<- gsub(",", ".", data$youth_unempl_rate)
+data$youth_unempl_rate<-as.double(data$youth_unempl_rate)
+```
+
+
+```{r}
+data%>%
+  ggplot(aes(x=youth_unempl_rate, color=Developed...Developing.Countries,
+             fill=Developed...Developing.Countries)) +
+  geom_density(alpha=0.5,size=1, color="black")+
+  theme(legend.position = "top", legend.title = element_blank())+
+  theme(axis.text.x = element_text(angle = 90))+
+  xlab("Median age of population which is unemployed")+
+  ggtitle("Age of unemployed countries between developed and developing")
+
+```
+
+
+
+```{r}
+x <- 10
+
+y <- 7
+!(!(x < 4) & !!!(y > 12))
+```
+
+
+We can see that in developed countries, the unemployment is big in range 10 to 15. While in developing countries we have smaller peak at that range but more spread between other years.
+
+
+## Task 3
+
+```{r}
+ x <- tibble(student = c("Jim","Sarah","Mike"),
+
++             grade_x = c(1, 4, 2))
+y <- tibble(student_name = c("Jim","Sarah","Julia"),
+
++             grade_y = c(1, 5, 1),
+
++             majorS = c("Epi","PH","Epi"))
+```
+
+Here we can see how many countries are developed and developing in each region.
+
+```{r}
+ggplot(data=selected,aes(x=Region.Name, y=1,
+                                   fill=Developed...Developing.Countries))+ 
+  geom_bar(position="fill", stat="identity")
+```
+
+This is the same but its with relative frequencies. The values are shrinked to 1.
+
+
+## Task 4
+
+```{r}
+ggplot(data=data, aes(x=youth_unempl_rate, y=Median_Age, color=Developed...Developing.Countries))+
+geom_point(size=2) + 
+stat_smooth(method = "lm", geom = "smooth")+
+  ggtitle("Uneployment rate and median age")
+```
+
+We can see that in developed countries, we have higher median age values within unemployment rate between 0 and 20. Also values for developing countries are more spread than developed once.
+
+
+## Task 5
+
+```{r}
+data$Region.Name <- factor(data$Region.Name)
+ggplot(data=data, aes(y= youth_unempl_rate, x=Region.Name, fill=Region.Name ) ) + geom_boxplot() + ggtitle("Youth unemployment rates between Regions")
+```
+
+Seeing the boxplots I don't see big differences in the average value of unemployment rates between each region. We can see outliers and short distribution in Europe and large in Oceania and Africa.
+
+
+## Task 6
+
+```{r}
+ggplot(data=data, aes(y= Median_Age, x=Region.Name, fill=Region.Name ) ) + geom_boxplot() + ggtitle("Median Population age between Regions")
+```
+
+Here th difference is bigger than the previous. We see low meadan populaiton age in Africa then Oceania. In Africa the distribution of the values is small which means that the population is with young people. We see almost equal mean age between Americans and Asia, but America has Older population. Europe has the oldes population in comparison to others.
+
+
+## Task 7
+
+```{r}
+cbbPalette <- c("#000000","#E69F00", "#56B4E9", "#009E73", "#F0E442")
+
+data  %>%
+      group_by(Sub.region.Name, Region.Name) %>%
+      summarise_at(vars(Median_Age), list(Avg = mean)) %>%
+      mutate(Sub.region.Name=fct_reorder(Sub.region.Name, Avg))%>%
+      ggplot(aes(x=Avg, y=Sub.region.Name) ) +
+      geom_point(size=3, aes(color=Region.Name)) +
+      scale_fill_manual(values=cbbPalette)+
+      xlab("Average Age") +
+      ylab("Sub Region") +
+      ggtitle("Average Age in each Sub region")
+```
+
+We can see the youngest people are in sub region of Sub-Saharan Africa and as expected the oldest are in Western Europe.
+
+
+## Task 8
+```{r}
+new_data <- read.csv("new_data.csv")
+head(new_data)
+```
+```{r}
+selected_data <- new_data %>% select("ï..Country.Name", "Country.Code", "X2020")
+head(selected_data)
+```
+
+
+```{r}
+final_data <-left_join(data,selected_data,by = c("ISO3166.1.Alpha.3"="Country.Code"))
+head(final_data)
+```
+
+## Task 9
+
+```{r}
+result <- final_data %>%
+  ggplot(aes(x=youth_unempl_rate, y=Median_Age, color=Developed...Developing.Countries,
+             size = X2020, text=official_name_en))+
+  geom_point()
+
+ggplotly(result, tooltip = c("text", "Median_age", "youth_unempl_rate", "X2020"))
+```
+
+Again the same scatter plot as Task 4 but this time we have 3rd dimension based on the populaiton of the country in 2020.
+
+
+
+```{r}
+x <- -7
+x > 0 & sqrt(x) < 2
+
+x <- -7
+x > 0 && sqrt(x) < 2
+```
+```{r}
+f3 <- function(A_one, A_two, A_three) {
+
+  A_one + A_two * A_three
+
+}
+
+f3(4, 2, 3)
+
+```
+
+```{r}
+data1 <- tibble(ID = 1:2,                     
+
++                 X1 = c("a1", "a2"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

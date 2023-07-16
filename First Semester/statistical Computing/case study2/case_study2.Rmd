@@ -1,0 +1,202 @@
+---
+title: "CaseStudy2"
+author: "Teodor Chakarov"
+date: '2022-05-17'
+output: 
+  pdf_document:
+    latex_engine: xelatex
+---
+# Case Study 2
+
+## Importing data
+```{r}
+library(dplyr)
+library(readr)
+library(tidyr)
+library(stringr)
+
+codes <- read.csv("country-codes.csv")
+head(codes)
+
+```
+
+Printing the names of the columns.
+```{r}
+names(codes)
+```
+
+Selecting the needed columns
+```{r}
+cn <- codes[c("official_name_en", "ISO3166.1.Alpha.2", "ISO3166.1.Alpha.3", "Developed...Developing.Countries", "Region.Name", "Sub.region.Name")]
+cn <- cn[-1,]
+```
+
+
+Uploading the new data and cleaning the white spaces.
+```{r}
+file="rawdata_343.txt"
+
+data1=read_fwf(file, skip=2)
+
+data1$X2 <- paste(data1$X2, coalesce(data1$X3, "") ,coalesce(data1$X4, "") )
+
+CleanData<-data1 %>% 
+  rename(
+    official_name_en=X2,
+    Median_Age = X5
+    )%>%
+  mutate(across(where(is.character), str_trim))%>%
+  select(official_name_en, Median_Age)
+
+CleanData<-as.data.frame(CleanData)
+str(CleanData)
+```
+
+Uploading dataframe 2, cleaning the white spaces and quotes.
+```{r}
+DataCsv=read_fwf("rawdata_373.csv", skip=1)
+
+CleanData2<-DataCsv %>% 
+  rename(
+    official_name_en=X1,
+    youth_unempl_rate = X2
+    )%>%
+  mutate(across(everything(), ~ trimws(., whitespace = '"')))
+CleanData2$youth_unempl_rate <- substring(CleanData2$youth_unempl_rate, 2)
+
+CleanData2$youth_unempl_rate<-as.numeric(CleanData2$youth_unempl_rate)
+CleanData2<-as.data.frame(CleanData2)
+
+str(CleanData2)
+```
+```{r}
+head(CleanData2)
+```
+
+Merging the new cleaned datas by inner join. That's how we are going to store ony values that exist form the two datasets. We are merging by country names from the two columns.
+```{r}
+merged <- full_join(CleanData, CleanData2)
+head(merged)
+
+```
+
+I am reading the new datset with the country codes.
+```{r}
+library("readxl")
+CIA <- read_excel("CIA_factbook_matching_table_iso.xlsx")
+head(CIA)
+```
+### Hypothesises.
+
+Here im going to inner_join the CIA data and the merged data by county names. The end result is 231 unique Countries.
+```{r}
+new_df <- inner_join(CIA, merged, c("Country" = "official_name_en"))
+head(new_df)
+```
+The first join is by Country name, the merged data and the first ***cn*** dataset. The end result is 192 unique countries.
+
+```{r}
+df_vars <- inner_join(merged, cn)
+head(df_vars)
+```
+
+And in the last join, im am joining the data with the codes with the oldest dataset. Since the ISO codes are reliable I am using by ISO with 2 characters.
+```{r}
+sum(is.na(CIA['ISO 3166 3']))
+sum(is.na(CIA['ISO 3166 2']))
+```
+
+
+```{r}
+df_vars2 <- inner_join(cn, new_df, c("ISO3166.1.Alpha.2" = "ISO 3166 2"))
+head(df_vars2)
+```
+My data rows is staying ate 209 rows.
+
+
+## Discuss tidyness of data
+I am going to get rid of columns "Country" and one of the ISO 3, since i have them one more time.
+```{r}
+df_vars_cleaned <- select(df_vars2, -'Country', -"ISO 3166 3")
+head(df_vars_cleaned)
+```
+
+We see that the have NaN values for the youth unemployment rate - 39 which is 18% from the whole data.
+```{r}
+sum(is.na(df_vars_cleaned$official_name_en))
+sum(is.na(df_vars_cleaned$ISO3166.1.Alpha.2))
+sum(is.na(df_vars_cleaned$ISO3166.1.Alpha.3))
+sum(is.na(df_vars_cleaned$Developed...Developing.Countries))
+sum(is.na(df_vars_cleaned$youth_unempl_rate))
+```
+printing the unique values in Country names and they don't have dublicates. 
+```{r}
+unique(df_vars_cleaned$official_name_en)
+```
+
+## Showing data statistics
+Values counts the categories.
+```{r}
+df_vars_cleaned %>%
+  count(Developed...Developing.Countries)
+```
+
+Value counts by name of the region.
+```{r}
+df_vars_cleaned %>%
+  count(Region.Name)
+```
+
+Grouping by the Region name and counting each category for developed/-ing county
+```{r}
+df_vars_cleaned %>%
+  group_by(Region.Name) %>%
+  count(Developed...Developing.Countries)
+```
+
+Showing the median value and the standard divination for Median Age and youth unemployed rate. Since youth unemployed rate has missing values I cannot see the results.
+```{r}
+df_vars_cleaned %>%
+  group_by(Developed...Developing.Countries) %>%
+  summarise(Median_Age_mean = mean(Median_Age), youth_unempl_rate = mean(youth_unempl_rate), Median_Age_sdt = sd(Median_Age), youth_unempl_rate_sdt = sd(youth_unempl_rate))
+```
+
+In order to skip that I used na.rm=True
+```{r}
+df_vars_cleaned %>%
+  group_by(Developed...Developing.Countries) %>%
+  summarise(Median_Age_mean = mean(Median_Age), youth_unempl_rate_mean = mean(youth_unempl_rate, na.rm=TRUE), Median_Age_sdt = sd(Median_Age), youth_unempl_rate_sdt = sd(youth_unempl_rate, na.rm=TRUE))
+```
+
+Here I am creating two new columns. I am checking if its above average of not and assigning yes/no category.
+```{r}
+df_vars <- df_vars_cleaned %>%
+        mutate(above_avg_median_age= if_else
+               (.$Median_Age > mean(.$Median_Age, na.rm=TRUE),'Yes', 'No')) %>%
+        mutate(above_avg_youth_unempl_rate= if_else
+               (.$youth_unempl_rate > mean(.$youth_unempl_rate, na.rm=TRUE), 'Yes', 'No'))
+  
+head(df_vars)
+```
+
+
+```{r}
+head(df_vars)
+```
+
+```{r}
+colnames(df_vars)
+```
+
+
+
+
+```{r  message=FALSE}
+write.csv2(na.omit(df_vars),"final_results.csv", row.names = FALSE, na = ".")
+```
+
+```{r}
+
+#write.csv2(na.omit(df_vars),"final_results.csv",row.names = FALSE, )
+```
+

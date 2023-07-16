@@ -1,0 +1,515 @@
+---
+title: "MesuermentDev"
+author: "Teodor Chakarov"
+date: '2022-05-21'
+output: 
+  pdf_document:
+    latex_engine: xelatex
+---
+# Survey and Measurrement Development in R
+
+## Preparing to analyse survey data
+```{r}
+library(psych)
+library(dplyr)
+library(likert)
+
+sme <- read.csv("brandloyalty.csv")
+
+# Print beginning of sme data frame
+head(sme)
+
+
+# Correlation matrix of expert ratings
+cor(sme)
+
+
+# Percentage agreement of experts
+#irr::agree(sme)
+```
+```{r}
+# Load psych package
+library(psych)
+
+# Check inter-rater reliability
+psych::cohen.kappa(sme)
+
+```
+
+
+```{r}
+# Calculate the CVR for each unique item in the data frame
+#cvr_by_item <- lawshe %>% 
+#  group_by(item) %>% 
+#  summarize(CVR = CVratio(NTOTAL = length(unique(expert)), 
+#                          NESSENTIAL = sum(rating == 'Essential')))
+
+# See the results
+#cvr_by_item
+```
+
+
+```{r}
+brand_rep <- read.csv("brandrep-cleansurvey-extraitem.csv")
+
+# Convert items to factor
+b_rep_likert <- brand_rep %>% 
+              	mutate_if(is.integer, as.factor)
+
+# Response frequencies - base R
+summary(b_rep_likert)
+
+# Plot response frequencies
+result <- likert(b_rep_likert)
+plot(result)
+```
+
+```{r error=TRUE}
+
+brand_qual <- read.csv("brandquall11-recodedbutextraitem.csv")
+
+# Get response frequencies from psych
+response.frequencies(brand_qual)
+
+# Print item descriptions
+brand_qual_items <- read.csv("branddesc.csv")
+brand_qual_items
+
+# Reverse code the "opposite" item
+brand_qual$tired_r <- recode(brand_qual$tired, 
+                            "1 = 5; 2 = 4; 4 = 2; 5 = 1")
+
+# Check recoding frequencies
+brand_qual %>% 
+	select(tired, tired_r) %>%
+	response.frequencies() %>%
+	round(2)
+```
+
+```{r}
+library(Hmisc)
+
+missing_lots <- read.csv("brandquall11-recodedbutextraitem.csv")
+# Total number of rows
+nrow(missing_lots)
+
+# Total number of complete cases
+nrow(na.omit(missing_lots))
+
+# Number of incomplete cases by variable
+colSums(is.na(missing_lots))
+
+# Hierarchical plot -- what values are missing together?
+plot(naclus(missing_lots))
+```
+
+
+```{r}
+# View significance of item correlations
+corr.test(missing_lots)
+```
+
+```{r}
+library(corrplot)
+
+# Visualize item correlations -- corrplot
+corrplot(cor(missing_lots), method = "circle")
+```
+
+```{r}
+# Get response frequencies
+response.frequencies(missing_lots)
+
+# Recode the appropriate item 
+#b_rep_items
+#missing_lots$poor_workman_r <- recode(missing_lots$poor_workman,   
+#							"1 = 5; 2 = 4; 4 = 2; 5 = 1")
+```
+
+## Exploratory factor analysis & survey development
+
+```{r}
+b_loyal_10 <- read.csv("brandloyalty.csv")
+corr.test(b_loyal_10)
+```
+
+```{r}
+# Visualize b_loyal_10 correlation matrix
+corrplot(cor(b_loyal_10))
+```
+
+```{r}
+# Parallel analysis
+fa.parallel(b_loyal_10)
+```
+
+```{r}
+brand_rep_9 <- read.csv("brandrep-cleansurvey-extraitem.csv")
+scree(brand_rep_9)
+```
+
+
+```{r}
+# Conduct three-factor EFA
+brand_rep_9_EFA_3 <- fa(brand_rep_9, nfactors = 3)
+
+# Print output of EFA
+names(brand_rep_9_EFA_3)
+```
+
+```{r warnings=FALSE}
+# Summarize results of three-factor EFA
+summary(brand_rep_9_EFA_3)
+
+# Build and print loadings for a two-factor EFA
+brand_rep_9_EFA_2 <- fa(brand_rep_9, nfactors = 2)
+brand_rep_9_EFA_2$loadings
+
+# Build and print loadings for a four-factor EFA
+brand_rep_9_EFA_4 <- fa(brand_rep_9, nfactors = 4)
+brand_rep_9_EFA_4$loadings
+```
+
+```{r}
+# Eigenvalues
+brand_rep_9_EFA_3$e.values
+
+# Factor score correlations
+brand_rep_9_EFA_3$score.cor
+
+# Factor loadings
+brand_rep_9_EFA_3$loadings
+```
+
+```{r}
+# Create brand_rep_8 data frame
+brand_rep_8 <- select(brand_rep_9, -one_of_a_kind)
+
+# Create three-factor EFA
+brand_rep_8_EFA_3 <- fa(brand_rep_8, nfactors = 3)
+
+# Factor loadings
+brand_rep_8_EFA_3$loadings
+
+# Factor correlations -- 9 versus 8 item model
+brand_rep_9_EFA_3$score.cor
+brand_rep_8_EFA_3$score.cor
+```
+
+```{r}
+# Three factor EFA loadings
+brand_rep_8_EFA_3$loadings
+
+# Two factor EFA & loadings
+brand_rep_8_EFA_2 <- fa(brand_rep_8, nfactors = 2)
+brand_rep_8_EFA_2$loadings
+
+# Four factor EFA & loadings
+brand_rep_8_EFA_4 <- fa(brand_rep_8, nfactors = 4)
+brand_rep_8_EFA_4$loadings
+
+```
+
+```{r}
+# Scree plot of brand_rep_8
+scree(brand_rep_8)
+```
+
+```{r}
+# Standardized coefficient alpha
+psych::alpha(brand_rep_9)$total$std.alpha
+
+# 3-factor EFA
+brand_rep_9_EFA_3 <- fa(brand_rep_9, nfactors = 3)
+brand_rep_9_EFA_3$loadings
+```
+
+```{r}
+# Get names of survey items
+colnames(brand_rep_8)
+
+# Create new data frames for each of three dimensions
+p_quality <- select(brand_rep_8, 1:3)
+p_willingness <- select(brand_rep_8, 4:6)
+p_difference <- select(brand_rep_8, 7:8)
+
+```
+
+```{r}
+# Get split-half reliability 
+splitHalf(brand_rep_8)
+
+# Get averages of even and odd row scores
+even_items <- colMeans(brand_rep_8[,c(FALSE,TRUE)])
+odd_items <- colMeans(brand_rep_8[,c(TRUE,FALSE)])
+
+# Correlate scores from even and odd items
+cor(even_items, odd_items)
+
+# Get Cronbach's alpha
+psych::alpha(brand_rep_8)
+```
+
+```{r}
+# 3 factor EFA
+b_loyal_10_EFA_3 <- fa(b_loyal_10, nfactors = 3)
+head(b_loyal_10)
+```
+```{r}
+# 3 factor EFA
+b_loyal_10_EFA_3 <- fa(b_loyal_10, nfactors = 3)
+
+# Factor loadings, eigenvalues and factor score correlations
+b_loyal_10_EFA_3$loadings
+b_loyal_10_EFA_3$e.values
+b_loyal_10_EFA_3$score.cor
+```
+
+```{r}
+# 2 factor EFA
+b_loyal_10_EFA_2 <- fa(b_loyal_10, nfactors = 2)
+# Factor loadings, eigenvalues and factor score correlations
+b_loyal_10_EFA_2$loadings
+b_loyal_10_EFA_2$e.values
+b_loyal_10_EFA_2$score.cor
+```
+
+## Confirmatory factor analysis & construct validation
+
+```{r}
+# Factor loadings -- EFA
+brand_rep_8$loadings
+
+
+# Plot diagram -- EFA
+fa.diagram(brand_rep_8)
+
+```
+
+```{r}
+ library(lavaan)
+
+# Rename items based on proposed dimensions
+colnames(b_loyal_10) <- c("ID1", "ID2", "ID3", 
+                        "PV1", "PV2", "PV3", 
+                        "BT1", "BT2", "BT3", "BT4")
+
+# Define the model
+b_loyal_cfa_model <- 'ID =~ ID1 + ID2 + ID3
+                    PV =~ PV1 + PV2 + PV3
+                    BT =~ BT1 + BT2 + BT3 + BT4'
+
+# Fit the model to the data
+b_loyal_cfa <- cfa(model = b_loyal_cfa_model, data = b_loyal_10)
+
+# Check the summary statistics -- include fit measures and standardized estimates
+summary(b_loyal_cfa, fit.measures = TRUE, standardized = TRUE)
+```
+
+```{r}
+c_sat <- read.csv("customersatisfactionclean.csv")
+
+# Two dimensions: odd- versus even-numbered items
+c_sat_bad_model <- 'ODD =~ CS1 + CS3 + CS5 + CS7 + CS9
+				EVEN =~ CS2 + CS4 + CS6 + CS8 + CS10'
+                
+# Fit the model to the data
+c_sat_bad_CFA <- cfa(model = c_sat_bad_model, data = c_sat)
+
+# Summary measures
+summary(c_sat_bad_CFA, fit.measures = TRUE, standardized = TRUE)
+```
+
+```{r}
+c_sat_50 <- head(c_sat, 50 )
+c_sat_model <- "F1 =~ CS1 + CS2 + CS3 + CS4\nF2 =~ CS5 + CS6 + CS7\nF3 =~ CS8 + CS9 + CS10"
+
+# Mardia's test for multivariate normality
+mardia(c_sat_50)
+
+# Fit model to the data using robust standard errors
+c_sat_cfa_mlr <- cfa(model = c_sat_model, data = c_sat_50, estimator = "MLR")
+
+# Summary including standardized estimates and fit measures
+#summary(c_sat_cfa_mlr, standardized = TRUE, fit.measures = TRUE)
+```
+
+
+```{r}
+# View current c_sat model
+cat(c_sat_model)
+c_sat_model_a <- "F1 =~ CS1 + CS2 + CS3 + CS4\n              F2 =~ CS5 + CS6 + CS7\n              F3 =~ CS8 + CS9 + CS10"
+
+# Add EU1 to the CSU factor
+c_sat_model_b <- "F1 =~ CS1 + CS3 + CS5 + CS7 + CS9\n\t\t\t\tF2 =~ CS2 + CS4 + CS6 + CS8 + CS10"
+
+# Fit Models A and B to the data
+c_sat_cfa_a <- cfa(model = c_sat_model_a, data = c_sat)
+c_sat_cfa_b <- cfa(model = c_sat_model_b, data = c_sat)
+```
+```{r}
+# Calculate the desired model fit statistics
+fitMeasures(c_sat_cfa_a, fit.measures = c("cfi", "tli"))
+fitMeasures(c_sat_cfa_b, fit.measures = c("cfi", "tli"))
+```
+```{r}
+# Compare the nested models
+anova(c_sat_cfa_a, c_sat_cfa_b)
+```
+
+
+
+```{r}
+c_sat_cfa_model_2 <- "F1 =~ CS1 + CS2 + CS3 + CS4 + CS5\n                      + CS6 + CS7\n                    F2 =~ CS8 + CS9 + CS10"
+c_sat_cfa_model_3 <-"F1 =~ CS1 + CS2 + CS3 + CS4\nF2 =~ CS5 + CS6 + CS7\nF3 =~ CS8 + CS9 + CS10"
+
+# Fit three-factor CFA
+c_sat_cfa_3 <- cfa(model = c_sat_cfa_model_3, data = c_sat)
+
+# Inspect key fit measures - three-factor CFA
+fitMeasures(c_sat_cfa_3, fit.measures = c("cfi","tli","rmsea"))
+
+# Fit two-factor CFA
+c_sat_cfa_2 <- cfa(model = c_sat_cfa_model_2, data = c_sat)
+
+# Inspect key fit measures - two-factor CFA
+fitMeasures(c_sat_cfa_2, fit.measures = c("cfi","tli","rmsea"))
+
+# Compare measures of construct validity for three- versus two-factor models
+#reliability(c_sat_cfa_3)
+#reliability(c_sat_cfa_2)
+```
+
+```{r error=TRUE}
+# Store F1 estimates as object loadings	
+loadings <- standardizedSolution(c_sat_cfa) %>%	
+ filter(op == "=~", lhs == "F1") %>% select(est.std)	
+ 
+# Composite reliability -- the squared sum of all loadings divided by that same figure plus the sum of 1 minus the loadings squared	
+com_rel <- sum(loadings) ^ 2 / ((sum(loadings)^ 2)  + sum(1 - loadings ^ 2))	
+com_rel	
+
+# Average variance extracted -- sum of all factor squares divided by the number of items	
+avg_var <- sum(loadings ^ 2) / nrow(loadings)	
+avg_var	
+
+# Compare versus semTools	
+reliability(c_sat_cfa)	
+```
+
+```{r}
+# Print brand_rep_factors
+brand_rep_factors <- read.csv("fact.csv")
+
+# Build model for lavaan
+brand_rep_8_cfa_model <- "QUAL =~ consistent + well_made + poor_workman_r
+				PRICE =~ go_up + lot_more + higher_price
+				UNIQUE =~ stands_out + unique"
+
+```
+
+
+## Criterion validity and replication
+
+```{r}
+# Correlate F1, F2 and F3 to spend_f, the 'latentized' spend
+brand_rep_model <- 'F1 =~ well_made + consistent + poor_workman_r
+					F2 =~ higher_price + lot_more + go_up
+					F3 =~ stands_out + unique
+					spend_f =~ spend
+					spend_f ~~ F1 + F2 + F3'
+
+# Fit the model to the data -- sem()
+#brand_rep_cv <- sem(data = brand_rep_scaled, model = brand_rep_model)
+
+# Print the standardized covariances b/w spend_f and other factors
+#standardizedSolution(brand_rep_cv) %>% filter(rhs == "spend_f")
+
+# Plot the model with standardized estimate labels
+#semPaths(brand_rep_cv, whatLabels = "est.std", edge.label.cex = .8)
+```
+
+```{r}
+# Bind & scale the variables
+#c_sat_rec_scale <- cbind(c_sat, c_sat_recommend) %>% scale()
+
+# Define the model - Rec_f covaries with F1, F2, F3
+#c_sat_rec_model <- 'F1 =~ CS1 + CS2 + CS3 + CS4
+#F2 =~ CS5 + CS6 + CS7
+#F3 =~ CS8 + CS9 + CS10
+#Rec_f =~ Rec_1
+#Rec_f ~~ F1 + F2 + F3'
+
+# Fit the model to the data 
+#c_sat_rec_sem <- sem(model = c_sat_rec_model, data = c_sat_rec)
+
+# Look up standardized covariances
+#standardizedSolution(c_sat_rec_sem) %>% filter(rhs == "Rec_f")
+```
+
+Predictive validity & factor scores
+
+```{r}
+# Define the model
+b_q_model <- 'HIP =~ trendy + latest + tired_r
+            VALUE =~ happy_pay + reason_price + good_deal
+            PERFORM =~ strong_perform + leader + serious
+            spend ~ HIP + VALUE + PERFORM'
+
+# Fit the model to the data
+#b_q_pv <- sem(data = b_q_scale, model = b_q_model)
+
+# Check fit, r-square, standardized estimates
+#summary(b_q_pv, standardized = T, fit.measures = T, rsquare = T)
+
+# Plot the model -- rotate from left to right
+#semPaths(b_q_pv, rotation = 2, whatLabels = "est.std", edge.label.cex = .8)
+```
+
+```{r}
+# Plot the new model
+#semPaths(brand_rep_sem, rotation = 2)
+
+# Get the coefficient information
+#standardizedSolution(brand_rep_sem) %>% filter(op == "~")
+
+# Get the r-squared
+#r_squared <- inspect(brand_rep_sem, 'r2')["F2"]
+#r_squared
+```
+
+```{r}
+# Linear regression of standardized spending and factor scores
+#bq_fs_reg <- lm(spend ~ F1 + F2 + F3, data = bq_fs_spend)
+
+# Summarize results, round estimates
+#rounded_summary <- round(summary(bq_fs_reg)$coef, 3)
+#rounded_summary
+
+# Summarize the results of CFA model
+#summary(brand_qual_pv)
+
+# Compare the r-squared of each
+#inspect_rsq <- inspect(brand_qual_pv, "r2")["spend"]
+#inspect_rsq
+#summary(bq_fs_reg)$r.squared
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
