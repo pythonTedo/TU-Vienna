@@ -1,0 +1,77 @@
+@prefix :  <http://semantics.id/example#> .
+
+@prefix rr:     <http://www.w3.org/ns/r2rml#> .
+PREFIX fnml:    <http://semweb.mmlab.be/ns/fnml#>
+@prefix rml:    <http://semweb.mmlab.be/ns/rml#> .
+@prefix ql:     <http://semweb.mmlab.be/ns/ql#> .
+@prefix carml:  <http://carml.taxonic.com/carml/> .
+
+<#film> a rr:TriplesMap ;
+    rml:logicalSource [
+        rml:source [ a carml:Stream; ];
+        rml:referenceFormulation ql:JSONPath ;
+        rml:iterator "$.[*].cast.[*]" ;
+    ];
+    rr:subjectMap [
+        rr:template "http://semantics.id/film/{id}";
+        rr:class :Film
+    ];
+    rr:predicateObjectMap [
+        rr:predicate :hasCast ;
+        rr:objectMap [
+            rr:parentTriplesMap <#cast>
+        ];
+    ];
+.
+
+<#cast> a rr:TriplesMap ;
+    rml:logicalSource [
+        rml:source [ a carml:Stream; ];
+        rml:referenceFormulation ql:JSONPath ;
+        rml:iterator "$.[*].cast.[*]" ;
+    ];
+    rr:subjectMap [
+        rr:template "http://semantics.id/film/cast";
+        rr:class :Cast
+    ];
+    rr:predicateObjectMap [
+        rr:predicate :character ;
+        rr:objectMap [
+            rml:reference "character" ;
+            rr:datatype xsd:string ;
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate :hasCastActor ;
+        rr:objectMap [
+            rr:parentTriplesMap <#actor>
+        ];
+    ];
+.
+
+<#actor> a rr:TriplesMap ;
+    rml:logicalSource [
+        rml:source [ a carml:Stream; ];
+        rml:referenceFormulation ql:JSONPath ;
+        rml:iterator "$.[*].cast.[*]" ;
+    ];
+    rr:subjectMap [
+        rr:template "http://semantics.id/cast/actor/{name}";
+        rr:class :Actor
+    ];
+    rr:predicateObjectMap [
+        rr:predicate :name ;
+        rr:objectMap [
+            rml:reference "name" ;
+            rr:datatype xsd:string ;
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate :gender ;
+        rr:objectMap [
+            rml:reference "gender" ;
+            rr:datatype xsd:integer ;
+        ];
+    ];
+.
+

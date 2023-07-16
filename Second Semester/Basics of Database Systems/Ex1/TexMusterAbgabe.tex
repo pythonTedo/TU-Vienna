@@ -1,0 +1,520 @@
+\documentclass[a4paper]{scrartcl}
+\usepackage[a4paper,top=3cm,left=3cm,right=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[naustrian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,enumerate}
+\usepackage[donotfixamsmathbugs]{mathtools}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{mdframed}
+
+\usepackage{scrlayer-scrpage}
+\pagestyle{scrheadings}
+
+\newcommand{\join}{\Join}
+\newcommand{\lsjoin}{\ltimes}
+\newcommand{\rsjoin}{\rtimes}
+\newcommand{\ojoin}{{\tiny \textifsym{d|><|d}}}
+\newcommand{\lojoin}{{\tiny \textifsym{d|><|}}}
+\newcommand{\rojoin}{{\tiny \textifsym{|><|d}}}
+% alternativ:
+% \newcommand{\ojoin}{=\join=}
+% \newcommand{\lojoin}{=\join}
+% \newcommand{\rojoin}{\join=}
+
+% Formatierung fuer Primary and Foreign Key
+\newcommand{\fk}[1]{\textit{#1}}      % foreign key
+\newcommand{\key}[1]{\underline{#1}}  % primary key
+
+% Moegliche Makros fuer Aufgabe 2
+\newcommand{\relline}[2]{#1\>(\>#2)\\}
+\newcommand{\rellinelo}[1]{ \> \>#1)\\} %left open
+\newcommand{\rellinebo}[1]{\> \>#1\\}  %both open
+\newcommand{\rellinero}[2]{#1\>(\>#2 \\} %right open
+
+
+\newcounter{Exernumb}
+\newenvironment{exercise}[1]%
+   {\stepcounter{Exernumb}\vspace{1em}%
+    \setlength{\fboxsep}{3mm}%
+    \noindent
+    \framebox[\textwidth][l]{%
+    \textbf{\textsf{Aufgabe \theExernumb\ (#1)}}%
+    \hfill [\hspace{2em} Punkte]%
+    }
+    \normalfont
+   }%
+   {%
+   }
+\newenvironment{subexercises}%
+   {\begin{enumerate}[(a)]}%
+   {\end{enumerate}}
+
+
+\newcommand{\ra}{\ensuremath{\rightarrow}}
+\newcommand{\la}{\ensuremath{\leftarrow}}
+
+\title{1.~\"Ubungsblatt (WS 2022)}
+\subtitle{3.0 VU Datenmodellierung / 6.0 VU Datenbanksysteme}
+\author{VNAME, NNAME (Matrikelnr.)}
+
+\automark{section}
+\ohead{\pagemark}
+\makeatletter
+\chead{1.~\"Ubungsblatt DM/DBS (WS 2022) -- \@author}
+\makeatother
+\cfoot{}
+
+\begin{document}
+\maketitle
+
+%%% === WICHTIG!! ANMERKUNG!!! 
+%%% Dies ist eine Vorlage(!!) welche helfen soll die Erstellung einer Abgabe zu
+%%% erleichtern. Dies ist nicht notwendigerweise ein Ausfuelltext in den einfach
+%%% die Antworten eingefuegt werden koennen! Dies bedeutet insbesonders, dass
+%%% es auch bei Verwendung dieser Vorlage in Ihrer Verantwortung liegt eine lesbare,
+%%% sinnvoll formatierte Abgabe zu erstellen. 
+
+\textbf{ --- HINWEIS!! 
+Bitte entfernen Sie diesen Hinweis sowie
+s\"amtliche Beispiele welche Sie nicht
+gel\"ost haben!! ---}
+
+\section*{EER-Diagramme}
+
+
+%% AUFGABE 1
+
+\begin{exercise}{EER-Diagramm erstellen}\label{ex:ER}
+
+  Die L\"osung befindet sich in Abbildung~\ref{fig:ER-sol}
+
+  %% kann natuerlich auch direkt eingebunden werden und muss nicht
+  %% in einem figure environment stehen.
+
+  \begin{figure}[H]
+    % Mit der folgenden Zeile kann eine Grafik eingebunden werden
+
+    % \centering\includegraphics[angle=90,width=\textwidth]{IMAGEHERE}
+    \caption{L\"osung zu Aufgabe~\ref{ex:ER}} 
+    \label{fig:ER-sol}
+  \end{figure}
+
+\end{exercise}
+
+
+
+
+%% AUFGABE 2
+
+\begin{exercise}{Semantik von EER Diagrammen}\label{ex:EERProperties}
+
+  \begin{itemize}
+    \item Antwort sollte enthalten: Den Beziehungstyp (Name), welche Notation weggelassen
+      wird, eine kurze Erkl\"arung welche Information nicht mehr dargestellt
+      werden kann, ein konkretes Beispiel.
+
+  \end{itemize}
+    
+
+\end{exercise}
+
+
+
+
+%% AUFGABE 3:
+\begin{exercise}{\"Uberf\"uhrung ins Relationenschema}\label{ex:ER-rel}
+
+  %% Natuerlich nur eine Moeglichkeit der Formatierung und
+  %% Environments. Kann frei gewaehlt werden.
+
+  \mbox{}
+  \begin{quote}\ttfamily
+  \begin{tabbing}
+      % zur richtigen Einrueckung ("Kreditkarte" funktioniert dieses Smeester gut als Platzhalter fuer den Relationennamen):
+      LaengsterRelationenname~\=(\= \kill
+      % Eintraege koennen entweder "manuell" angelegt werden
+      Relationname \> ( \> \key{SCHL\"USSEL}, \fk{FK}, \key{\fk{KEY \& FK}}, ATTRIBUT) \\
+
+      % oder mittels Makros:
+      \relline{Relationenname}{\key{SCHLUESSEL, \fk{KEY \& FK}}} 
+      \rellinero{Relationenname}{\key{SCHLUESSEL, \fk{KEY \& FK}},} % "rechts offen": keine ) auf der rechten Seite
+      \rellinebo{ATTRIBUT,}                                       % "both offen": kein Tabellenname, kein ( auf der linken Seite,
+                                                                    % kein ) auf der rechten Seite
+      \rellinelo{ATTRIBUT, \fk{FK}}                               % "links offen": kein Tabellenname, kein ( auf der linken Seite
+  \end{tabbing}
+  \end{quote}
+
+\end{exercise}
+
+
+
+
+
+
+\section*{Aufgaben: Relationale Algebra - Relationenkalk\"ul}
+
+%% AUGABE 4
+
+\begin{exercise}{Auswerten}
+  
+  %% Wiederum: Nur ein Vorschlag fuer die Formatierung,
+  %% darf natuerlich frei gewaehlt werden.
+
+
+  \begin{subexercises}
+
+    \item % (a) 
+      Bitte vergessen Sie nicht das Schema der Ergebnisrelation anzugeben!
+
+    \begin{center}     
+      \begin{tabular}{|c|c|c|c|}  %% Hier die richtige Anzahl an Spalten angeben
+        \hline
+        \multicolumn{4}{|c|}{$q$}\\ %% statt 4 die Anzahl der Spalten (als Zahl) eintragen
+        \hline 
+        \textbf{AttName1} & \textbf{AttName2} & \textbf{AttName3} & \textbf{AttName4} \\
+        \hline
+        Wert A1 Tupel 1 & Wert A2 Tupel 1 & Wert A3 Tupel 1 & Wert A4 Tupel 1 \\
+        Wert A1 Tupel 2 & Wert A2 Tupel 2 & Wert A3 Tupel 2 & Wert A4 Tupel 2 \\
+        %% benoetigte Anzahl an Zeilen eintragen
+        \hline  
+      \end{tabular}
+      \end{center}
+
+
+
+
+    \item % (b)
+      Bitte vergessen Sie nicht das Schema der Ergebnisrelation anzugeben!
+
+
+    \begin{center}     
+      \begin{tabular}{|c|c|c|c|}  %% Hier die richtige Anzahl an Spalten angeben
+        \hline
+        \multicolumn{4}{|c|}{$q$}\\ %% statt 4 die Anzahl der Spalten (als Zahl) eintragen
+        \hline 
+        \textbf{AttName1} & \textbf{AttName2} & \textbf{AttName3} & \textbf{AttName4} \\
+        \hline
+        Wert A1 Tupel 1 & Wert A2 Tupel 1 & Wert A3 Tupel 1 & Wert A4 Tupel 1 \\
+        Wert A1 Tupel 2 & Wert A2 Tupel 2 & Wert A3 Tupel 2 & Wert A4 Tupel 2 \\
+        %% benoetigte Anzahl an Zeilen eintragen
+        \hline  
+      \end{tabular}
+      \end{center}
+  \end{subexercises}
+  
+
+
+\end{exercise}
+
+
+
+
+\begin{exercise}{\"Aquivalenzen}
+
+ \noindent \textbf{Aufgabe (a)} \hfill  
+  \textbf{Ja/Nein}, $q_1$ und $q_2$ \textbf{sind/sind nicht} \"aquivalent.
+ 
+  Zuerst eine Erkl\"arung warum sie \"aquivalent sind, oder warum nicht.
+
+  Fall sie nicht \"aquivalent sind ein Gegenbeispiel:
+ \begin{center}
+  \textbf{Gegenbeispiel}
+  \vspace{2ex}
+
+  \begin{minipage}{5em}
+  \begin{center}
+    \begin{tabular}{|c|c|c|}
+     \hline
+     \multicolumn{3}{|c|}{\textbf{R}} \\
+      \hline
+      \textbf{A} & \textbf{B} & \textbf{C} \\ \hline
+       ? & ? & ? \\ \hline %% so viele Zeilen einsetzen wie ben\"otigt
+    \end{tabular}
+  \end{center}
+  \end{minipage}
+  \hspace{1em}
+  \begin{minipage}{6em}
+  \begin{center}
+    \begin{tabular}{|c|c|c|}
+     \hline
+     \multicolumn{3}{|c|}{\textbf{S}} \\
+      \hline
+      \textbf{B} & \textbf{D} & \textbf{E} \\ \hline
+      ? & ? & ? \\ \hline %% so viele Zeilen einsetzen wie ben\"otigt
+    \end{tabular}
+  \end{center}
+  \end{minipage}
+  
+  \vspace{1em}
+
+  \begin{minipage}{5em}
+  \begin{center}
+    \begin{tabular}{|c|c|c|}
+     \hline
+     \multicolumn{3}{|c|}{\textbf{$q_1$}} \\
+      \hline
+      \textbf{?} & \textbf{?} & \dots  \\ \hline
+       ? & ? & \dots \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{minipage}
+  \hspace{1em}
+  \begin{minipage}{6em}
+  \begin{center}
+    \begin{tabular}{|c|c|c|}
+     \hline
+     \multicolumn{3}{|c|}{\textbf{$q_2$}} \\
+      \hline
+      \textbf{?} & \textbf{?} & \dots  \\ \hline
+       ? & ? & \dots \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{minipage}
+ \end{center}
+\end{exercise}
+
+
+
+\begin{exercise}{Gr\"o{\ss}enabsch\"atzung}
+
+  \noindent \textbf{Aufgabe (a)} \hfill  [Minimum: M | Maximum: M]
+
+  Begr\"undung (sowohl Minimum als auch Maximum)
+
+ \begin{center}
+  \textbf{Minimum: ??}
+  \vspace{2ex}
+
+  \begin{minipage}{8em}
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+     \hline
+     \multicolumn{4}{|c|}{\textbf{S}} \\
+      \hline
+      \textbf{A} & \textbf{B} & \textbf{\underline{C}} & \textbf{\underline{D}} \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{minipage}
+  \hspace{1em}
+  \begin{minipage}{5em}
+  \begin{center}
+    \begin{tabular}{|c|c|c|}
+     \hline
+     \multicolumn{3}{|c|}{\textbf{T}} \\
+      \hline
+      \textbf{A} & \textbf{C} & \textbf{\underline{E}} \\ \hline
+      ? & ? & ? \\ \hline
+      ? & ? & ? \\ \hline
+      ? & ? & ? \\ \hline
+      ? & ? & ? \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{minipage}
+  \hspace{5em}
+  \begin{minipage}{3em}
+  \begin{center}
+    \begin{tabular}{|c|c|}
+     \hline
+     \multicolumn{2}{|c|}{\textbf{Ergebnis}} \\
+      \hline
+      \textbf{E} & \textbf{X} \\ \hline
+      ? & ? \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{minipage}
+ \end{center}
+ 
+ \bigskip
+
+ \begin{center}
+  \textbf{Maximum: ??}
+  \vspace{2ex}
+
+  \begin{minipage}{8em}
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+     \hline
+     \multicolumn{4}{|c|}{\textbf{S}} \\
+      \hline
+      \textbf{A} & \textbf{B} & \textbf{\underline{C}} & \textbf{\underline{D}} \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+      ? & ? & ? & ? \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{minipage}
+  \hspace{1em}
+  \begin{minipage}{5em}
+  \begin{center}
+    \begin{tabular}{|c|c|c|}
+     \hline
+     \multicolumn{3}{|c|}{\textbf{T}} \\
+      \hline
+      \textbf{A} & \textbf{C} & \textbf{\underline{E}} \\ \hline
+      ? & ? & ? \\ \hline
+      ? & ? & ? \\ \hline
+      ? & ? & ? \\ \hline
+      ? & ? & ? \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{minipage}
+  \hspace{5em}
+  \begin{minipage}{3em}
+  \begin{center}
+    \begin{tabular}{|c|c|}
+     \hline
+     \multicolumn{2}{|c|}{\textbf{Ergebnis}} \\
+      \hline
+      \textbf{E} & \textbf{X} \\ \hline
+      ? & ? \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{minipage}
+ \end{center}
+
+
+\end{exercise}
+
+\vspace{1em}
+
+
+\begin{exercise}{Abfragesprachen}
+
+  \begin{subexercises}
+    \item Für Abfrage gegben in Relationaler Algebra:
+
+      übersetzt in \textbf{Tupelkalk\"ul:}
+
+     übersetzt in \textbf{Dom\"anenkalk\"ul:}
+
+    \item Für Abfrage gegeben in Domänenkalkül
+
+      übersetzt in \textbf{Tupelkalk\"ul:}
+      
+      übersetzt in  \textbf{Relationale Algebra:}
+
+    \item Für Abfrage gegeben in Domänenkalkül
+
+      übersetzt in \textbf{Tupelkalk\"ul:}
+
+      übersetzt in  \textbf{Relationale Algebra:}
+
+  \end{subexercises}  
+
+\end{exercise}
+
+
+
+\begin{exercise}{Formalisieren von Anfragen}\label{ex:ra-formalisieren}
+
+  \begin{subexercises}
+    \item 
+
+    \centerline{\textbf{Relationale Algebra:}}
+
+    \[
+      Relationaler Algebra Ausdruck 
+    \]
+   
+    \medskip
+    \centerline{\textbf{Tupelkalk\"ul:}}
+    \vspace{-.8cm}
+    \begin{multline*}
+      \{ Ausgabe  \mid Definition \}
+  \end{multline*}
+  
+  \medskip
+    \centerline{\textbf{Dom\"anenkalk\"ul:}}
+    \vspace{-.8cm}
+    \begin{multline*}
+      \{ Ausgabe  \mid Definition \}
+    \end{multline*}
+
+
+    \item 
+
+    \centerline{\textbf{Relationale Algebra:}}
+    \[
+      Relationaler Algebra Ausdruck 
+    \]
+   
+    \medskip
+    \centerline{\textbf{Tupelkalk\"ul:}}
+    \vspace{-.8cm}
+    \begin{multline*}
+      \{ Ausgabe  \mid Definition \}
+    \end{multline*}
+  
+  \medskip
+    \centerline{\textbf{Dom\"anenkalk\"ul:}}
+    \vspace{-.8cm}
+    \begin{multline*}
+      \{ Ausgabe  \mid Definition \}
+    \end{multline*}
+
+
+    \item 
+
+    \centerline{\textbf{Relationale Algebra:}}
+    \[
+      Relationaler Algebra Ausdruck 
+    \]
+   
+    \medskip
+    \centerline{\textbf{Tupelkalk\"ul:}}
+    \vspace{-.8cm}
+    \begin{multline*}
+      \{ Ausgabe  \mid Definition \}
+  \end{multline*}
+  
+  \medskip
+    \centerline{\textbf{Dom\"anenkalk\"ul:}}
+    \vspace{-.8cm}
+    \begin{multline*}
+      \{ Ausgabe  \mid Definition \}
+    \end{multline*}
+
+
+      \item 
+
+    \centerline{\textbf{Relationale Algebra:}}
+    \[
+      Relationaler Algebra Ausdruck 
+    \]
+   
+    \medskip
+    \centerline{\textbf{Tupelkalk\"ul:}}
+    \vspace{-.8cm}
+    \begin{multline*}
+      \{ Ausgabe  \mid Definition \}
+  \end{multline*}
+  
+  \medskip
+    \centerline{\textbf{Dom\"anenkalk\"ul:}}
+    \vspace{-.8cm}
+    \begin{multline*}
+      \{ Ausgabe  \mid Definition \}
+    \end{multline*}
+
+  \end{subexercises}
+  
+\end{exercise}
+
+
+\end{document}
+

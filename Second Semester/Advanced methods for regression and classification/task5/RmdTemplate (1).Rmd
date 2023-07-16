@@ -1,0 +1,60 @@
+---
+title: "Simple template for R Markdown"
+subtitle: "for Advanced Methods for Regression and Classification"
+author: "Prof. Peter Filzmoser"
+date: "01.10.2022"
+output: pdf_document
+---
+
+##General information:
+
+R Markdown conveniently combines R code with textual explanations (in Latex
+or html coding). This will be useful for our exercises, but is really useful 
+in general when you would like to have documented R output. 
+Solve the tasks with R code, and place short comments to answer the questions. 
+There is no need for producing a fancy document. Keep things as simple as possible. 
+Always show the (relevant) R code - never hide it.
+
+R and R-Studio need to be installed, as well as \LaTeX
+(e.g. for Windows as Miktex https://miktex.org/ and for Linux as TexLive https://www.tug.org/texlive/).
+Then open this file in R-Studio with
+*File - Open File*, and press the button *Knit*. The result is a pdf file.
+
+**Submit both, the .Rnw and the .pdf file to TUWEL.**
+
+# Some simple examples:
+
+## Load and plot data:
+
+```{r, echo=TRUE}
+data(Auto,package="ISLR")
+x <- Auto[,-9]
+```
+
+Plot the selected data, with origin as color and symbol:
+```{r, echo=TRUE,fig.width=6,fig.height=4}
+plot(x, col=x$origin, pch=x$origin)
+```
+
+## Estimate the correlation matrix of the numeric variables
+
+Pearson: investigates linear relationsships (default)
+```{r, echo=TRUE}
+cor.pearson <- cor(x)
+```
+Kendall: investigates non-linear relationsships
+```{r, echo=TRUE}
+cor.kendall <- cor(x, method = "kendall")
+```
+
+Do eigen-decomposition and compare eigenvalues:
+```{r, echo=TRUE,fig.width=4,fig.height=4}
+eigen.pearson <- eigen(cor.pearson)
+eigen.kendall <- eigen(cor.kendall)
+plot(eigen.pearson$values,eigen.kendall$values,
+     xlab="Eigenvalues from Pearson",ylab="Eigenvalues from Kendall")
+abline(c(0,1),col=4,lty=2)
+```
+
+
+</div></pre>

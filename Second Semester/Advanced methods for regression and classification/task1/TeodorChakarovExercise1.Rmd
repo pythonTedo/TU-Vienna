@@ -1,0 +1,267 @@
+---
+title: "Task 1"
+subtitle: "for Advanced Methods for Regression and Classification"
+author: "Teodor Chakarov"
+date: 16.10.2022
+output: 
+  pdf_document:
+    toc: TRUE
+---
+
+
+# Exercise 1
+
+
+## Load data
+
+Let's load our data for this exercise.
+
+```{r, echo=TRUE}
+data(College ,package="ISLR")
+data_col <- College
+str(data_col)
+```
+
+
+We can see that the majority of out attributes are numeric values just ***Private*** is categorical variable. 
+Now we will see if we have missing values.
+
+```{r}
+data_col <- na.omit(data_col)
+```
+
+
+## Train and Test split
+We need to predict the attribute ***Apps*** (which will be our dependent variable).
+First we will get rid of the columns ***"Accept"*** and ***"Enroll"***.
+
+```{r}
+data_col2 <- data_col[ , -which(names(data_col) %in% c("Accept", "Enroll"))]
+str(data_col2)
+```
+
+We have to convert our categorical variable to numeric one.
+```{r}
+data_col2$Private <- as.numeric(data_col2$Private)
+```
+
+I am picking 2/3rd of the data for the training set and 1/3 for the testing.
+
+```{r}
+set.seed(16)
+
+## 2/3 of the sample size
+smp_size <- floor(round(nrow(data_col2)*2/3))
+train_ind <- sample(seq_len(nrow(data_col2)), size = smp_size)
+
+smp_size
+```
+
+Getting the smaple size lets now split the data into trian and test.
+```{r}
+train <- data_col2[train_ind, ]
+test <- data_col2[-train_ind, ]
+
+# Setting the y to be "Apps"
+y_train = train[ , which(names(train) %in% c("Apps"))]
+y_test = test[ , which(names(test) %in% c("Apps"))]
+
+# Removing the predictive variable from the training and testing sets.
+x_train = train[ , -which(names(train) %in% c("Apps"))]
+x_test = test[ , -which(names(test) %in% c("Apps"))]
+``` 
+
+
+```{r}
+summary(x_train)
+```
+
+Here we can see the overall summary of the data. Min and max values, 1st and 3rd Quantile, Meadian and Mean values for each of the attributes.
+```{r}
+plot(x_train)
+```
+
+## Linear Model Fit
+Now we will fit our training data to the linear model.
+```{r}
+res <- lm(y_train ~ ., data = x_train) 
+summary(res)
+```
+
+We can see based on the summary, that the most significant for the model are the parameters: 
+```
+***The Intercept, the F.Undergrad, P.Undergrad, Room.Board, perc.alumni, Expend and Grad.Rate***
+```
+
+Let's plot our models summary...
+
+```{r}
+plot(res)
+```
+
+We can state based on the graphs, there is heteroscedasticity in the data. The residuals in the begging are well structured in a cluster where y values are small. But with grow of the predictive attribute, more spread our errors is. 
+
+Now we can compute the design matrix:
+```{r}
+X <- model.matrix(res)
+```
+
+Calculating by the formula we receive this matrix.
+```{r}
+solve(t(X)%*%X)
+```
+
+Addint the matrix multiplication between trnasposed X and y_train, we should recive the same coeficients with the linear model summary from above. Which is the case.
+```{r}
+solve(t(X)%*%X)%*%(t(X)%*%y_train)
+```
+
+The ***Private*** independent binary variable has not so big significance for our model. It is negatively correlated. That means the bigger the Private value is, the more negative impact is going to give to the model. But since its binary, for each "2"(NO), we will multiply that all the times with -2,93 which is bigger value. But since the p-value of the private is not smaller than 0,05 then its not so significant. 
+
+
+## Predict data
+
+Now we will use our model to predict the training and testing data. Also we will compute the resudula errors. 
+```{r}
+pred_train <- predict(res, x_train)
+pred_test <- predict(res, x_test)
+
+residuals_train <- y_train - pred_train
+residuals_test <- y_test - pred_test
+```
+
+
+```{r}
+plot(y_train, residuals_train)
+
+```
+We can see that this graph looks the same as the visualization of the model graph.We have outlyer point which is pretty distant from the rest of the datapoints.
+
+And for the testing data we have...
+```{r}
+plot(y_test, residuals_test)
+```
+
+We calculated the residual errors on the predictions (y_train - y_predict) and from the test data respectively. On the scatterplot we can see that the testing data has outlayers as well. Also the data is more scattered. 
+Also w have to state that our data has the same variance distribution in both training and testing data. 
+
+Our model may be overfitting. For that case, we need to see the RMSE.
+
+
+## Compute the RMSE
+
+```{r}
+compute_rmse <- function(residuals) {
+   RSS <- c(crossprod(residuals))
+   MSE <- RSS / length(residuals)
+   RMSE <- sqrt(MSE)
+   return(RMSE)
+}
+
+```
+
+Lets compute the RMSE for the training data and testing data
+```{r}
+compute_rmse(residuals_train)
+```
+
+```{r}
+compute_rmse(residuals_test)
+```
+
+We have less RMSE error on the testing data and bigger on the training set. Maybe the bigger error comes from the outlyer point or we have a lot of bias in our model (underfitts).
+
+
+# Exercise 2
+
+In this exercise we will compute a smaller linear model with only valuable features in it.
+
+## Remove columns and train the data
+
+```{r}
+x_train2 <- x_train[ , which(names(x_train) %in% c("F.Undergrad", "P.Undergrad", "Room.Board","perc.alumni", "Expend", "Grad.Rate"))]
+x_test2 <- x_test[ , which(names(x_test) %in% c("F.Undergrad", "P.Undergrad", "Room.Board","perc.alumni", "Expend", "Grad.Rate"))]
+```
+
+```{r}
+str(x_train2)
+```
+
+```{r}
+res2 <- lm(y_train ~ ., data = x_train2) 
+summary(res2)
+
+```
+
+0,75
+Here we can see that with only those columns our Multiple R-squared dropped from 0.75 to 0.74. Not a big drop and that may state that maybe the models are similar (with similar variance)
+
+```{r}
+pred_train2 <- predict(res2, x_train2)
+pred_test2 <- predict(res2, x_test2)
+
+residuals_train2 <- y_train - pred_train2
+residuals_test2 <- y_test - pred_test2
+
+```
+
+
+```{r}
+plot(y_train, residuals_train2)
+```
+
+```{r}
+plot(y_test, residuals_test2)
+```
+
+```{r}
+plot(res2)
+```
+
+The new data looks as parsed as the data with all the variables. For better meaning, we will compute the RMSE so we can validate if our new model is better than the first one.
+
+**RMSE On BIGGER MODEL**
+```{r}
+compute_rmse(residuals_train)
+```
+
+```{r}
+compute_rmse(residuals_test)
+```
+
+**RMSE On SMALLER MODEL**
+```{r}
+compute_rmse(residuals_train2)
+```
+```{r}
+compute_rmse(residuals_test2)
+```
+
+We can see not big of a difference on the performance of the second model.
+
+```{r}
+anova(res, res2)
+```
+And after the ANOVA we can say that the models are similar with similar variance on the residuals. 
+
+
+# Exercise 3 
+## Compute the Stepwise Linear model - backward
+
+Now we will compute the step linear model, giving the bigger model and reducing the columns at each step.
+```{r}
+step_model = step(res, direction = "backward")
+summary(step_model)
+```
+
+We are loosing feature until we have only the most significant features for the model. 
+
+## Compute the Stepwise Linear model - forward
+```{r}
+empty <- lm(y_train ~ 1, data = x_train)
+
+mod_froward <- step(empty, scope=formula(res), direction="forward")
+```
+
+The AIC value is not dropping that fast in the end. So form model selection, we can pick the smaller model, because its the computation is not high. We need less features and performs as well as the bigger one. 
+

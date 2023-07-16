@@ -1,0 +1,340 @@
+@prefix : <http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3> .
+
+<http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#belongsTo
+:belongsTo rdf:type owl:ObjectProperty ;
+           owl:inverseOf :isRated ;
+           rdfs:domain :Ratings ;
+           rdfs:range :Game ;
+           rdfs:comment "The rating belongs to the game" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#hasCreated
+:hasCreated rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf :responsibleFor ;
+            owl:inverseOf :hasGamestudio ;
+            rdfs:domain :Game_Studio ;
+            rdfs:range :Creators .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#hasCustomer
+:hasCustomer rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf :isRated ;
+             rdfs:domain :Ratings ;
+             rdfs:range :Customers .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#hasDistributor
+:hasDistributor rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf :responsibleFor ;
+                owl:inverseOf :isDistributorof ;
+                rdf:type owl:SymmetricProperty ;
+                rdfs:domain :Creators ;
+                rdfs:range :Distributors .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#hasGamestudio
+:hasGamestudio rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf :responsibleFor ;
+               rdfs:domain :Creators ;
+               rdfs:range :Game_Studio .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#hasLicense
+:hasLicense rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf :hasPayment ;
+            rdfs:domain :Payments ;
+            rdfs:range :Type_of_license .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#hasMicrotransaction
+:hasMicrotransaction rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf :hasPayment ;
+                     rdfs:domain :Payments ;
+                     rdfs:range :Microtransactions .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#hasPayment
+:hasPayment rdf:type owl:ObjectProperty ;
+            rdfs:domain :Game ;
+            rdfs:range :Payments .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#hasProfessional
+:hasProfessional rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf :isRated ;
+                 rdfs:domain :Ratings ;
+                 rdfs:range :Professional .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#hasRequirement
+:hasRequirement rdf:type owl:ObjectProperty ;
+                rdfs:domain :Game ;
+                rdfs:range :System_Requirements ;
+                rdfs:comment "The game has  different requirements. Minimum and Recommended" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#isDistributorof
+:isDistributorof rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf :responsibleFor ;
+                 rdf:type owl:SymmetricProperty ;
+                 rdfs:domain :Distributors ;
+                 rdfs:range :Creators .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#isRated
+:isRated rdf:type owl:ObjectProperty ;
+         rdfs:domain :Game ;
+         rdfs:range :Ratings .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#responsibleFor
+:responsibleFor rdf:type owl:ObjectProperty ;
+                rdfs:domain :Creators ;
+                rdfs:range :Game ;
+                rdfs:comment "People responsible for the success of the game" .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#byCustomers
+:byCustomers rdf:type owl:DatatypeProperty ;
+             rdfs:domain :Customers ;
+             rdfs:range xsd:integer ;
+             rdfs:comment "Rating from customers" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#byProfessional
+:byProfessional rdf:type owl:DatatypeProperty ;
+                rdfs:domain :Professional ;
+                rdfs:range xsd:integer ;
+                rdfs:comment "Ratings from Professional" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#costs
+:costs rdf:type owl:DatatypeProperty ;
+       rdfs:domain :Game ;
+       rdfs:range xsd:float ;
+       rdfs:comment "The price of the game" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#downloads
+:downloads rdf:type owl:DatatypeProperty ;
+           rdfs:domain :Game ;
+           rdfs:range xsd:integer ;
+           rdfs:comment "Number of Downloads" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#isCalled
+:isCalled rdf:type owl:DatatypeProperty ;
+          rdfs:domain :Game ;
+          rdfs:range xsd:string ;
+          rdfs:comment "The name of the game" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#releasedon
+:releasedon rdf:type owl:DatatypeProperty ;
+            rdfs:domain :Game ;
+            rdfs:range xsd:dateTime ;
+            rdfs:comment "Date of Release" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#takes
+:takes rdf:type owl:DatatypeProperty ;
+       rdfs:domain :Game ;
+       rdfs:range xsd:float ;
+       rdfs:comment "Duration of the game in hours" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#won
+:won rdf:type owl:DatatypeProperty ;
+     rdfs:domain :Game ;
+     rdfs:range xsd:string ;
+     rdfs:comment "Rewards given to the game" .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#CPU
+:CPU rdf:type owl:Class ;
+     rdfs:subClassOf :System_Requirements ;
+     rdfs:comment "CPU type" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Comsetic
+:Comsetic rdf:type owl:Class ;
+          rdfs:subClassOf :Microtransactions ;
+          rdfs:comment "Cosmetic payments are payments for skins, banners and badges." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Creators
+:Creators rdf:type owl:Class ;
+          rdfs:comment "All people responsible for the game." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Customers
+:Customers rdf:type owl:Class ;
+           rdfs:subClassOf :Ratings ,
+                           [ rdf:type owl:Class ;
+                             owl:complementOf :Professional
+                           ] ;
+           owl:disjointWith :Professional ;
+           rdfs:comment "Ratings from the customes" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Distributors
+:Distributors rdf:type owl:Class ;
+              rdfs:subClassOf :Creators ;
+              rdfs:comment "The game strudio responsible for selling the game." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#GPU
+:GPU rdf:type owl:Class ;
+     rdfs:subClassOf :System_Requirements ;
+     rdfs:comment "GPU type" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Game
+:Game rdf:type owl:Class ;
+      rdfs:subClassOf [ rdf:type owl:Restriction ;
+                        owl:onProperty :hasRequirement ;
+                        owl:qualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                        owl:onClass :System_Requirements
+                      ] ;
+      rdfs:comment "Game is class which will hold a specific game." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Game_Studio
+:Game_Studio rdf:type owl:Class ;
+             rdfs:subClassOf :Creators ;
+             rdfs:comment "The game strudio responsible for developing the game." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Gameplay_Type
+:Gameplay_Type rdf:type owl:Class ;
+               rdfs:subClassOf :Game ;
+               rdfs:comment "This property will store type of the game. Multiplayer or Singleplayer." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Genre
+:Genre rdf:type owl:Class ;
+       rdfs:subClassOf :Game ;
+       rdfs:comment "Genre of the given computer game." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Microtransactions
+:Microtransactions rdf:type owl:Class ;
+                   rdfs:subClassOf :Payments ;
+                   rdfs:comment "Microtransaction payments within the game. They can be just cosmetic or upgrades of the powers." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#OS
+:OS rdf:type owl:Class ;
+    rdfs:subClassOf :System_Requirements ;
+    rdfs:comment "OS type" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Payments
+:Payments rdf:type owl:Class ;
+          rdfs:subClassOf [ rdf:type owl:Restriction ;
+                            owl:onProperty :hasMicrotransaction ;
+                            owl:someValuesFrom :Microtransactions
+                          ] ,
+                          [ rdf:type owl:Restriction ;
+                            owl:onProperty :hasLicense ;
+                            owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                            owl:onClass :Type_of_license
+                          ] ;
+          rdfs:comment "Types of paiments within the game." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Platform
+:Platform rdf:type owl:Class ;
+          rdfs:subClassOf :Game ;
+          rdfs:comment "On which platform the given game is available." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Professional
+:Professional rdf:type owl:Class ;
+              rdfs:subClassOf :Ratings ,
+                              [ rdf:type owl:Class ;
+                                owl:complementOf :Customers
+                              ] ;
+              rdfs:comment "Raitings from professional critics" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#RAM
+:RAM rdf:type owl:Class ;
+     rdfs:subClassOf :System_Requirements ;
+     rdfs:comment "RAM capacity" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Ratings
+:Ratings rdf:type owl:Class ;
+         rdfs:subClassOf [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasCustomer ;
+                           owl:someValuesFrom :Customers
+                         ] ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasProfessional ;
+                           owl:someValuesFrom :Professional
+                         ] ;
+         rdfs:comment "Ratings assigned for the game by players or professional critics." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#System_Requirements
+:System_Requirements rdf:type owl:Class ;
+                     rdfs:comment "System Requirements needed for the game" .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Type_of_license
+:Type_of_license rdf:type owl:Class ;
+                 rdfs:subClassOf :Payments ;
+                 rdfs:comment "The license needed. People can pay only once to play or every month." .
+
+
+###  http://www.semanticweb.org/tedoc/ontologies/2022/10/untitled-ontology-3#Upgrades
+:Upgrades rdf:type owl:Class ;
+          rdfs:subClassOf :Microtransactions ;
+          rdfs:comment "Payments for upgrades allow faster leveling, more power and having more gold in the game." .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :CPU
+                :GPU
+                :OS
+                :RAM
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :Creators
+                :Game
+                :Payments
+                :Ratings
+                :System_Requirements
+              )
+] .
+
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi

@@ -1,0 +1,289 @@
+---
+title: "Task 5"
+subtitle: "for Advanced Methods for Regression and Classification"
+author: "Teodor Chakarov"
+date: 23.11.2022
+output: 
+  pdf_document:
+    toc: TRUE
+---
+
+# Exercise 1
+
+```{r}
+library(dplyr)
+library(stats)
+```
+
+```{r}
+df <- read.csv2("bank.csv")
+str(df)
+```
+```{r}
+#df$job <- as.factor(df$job)
+#df$marital <- as.factor(df$marital)
+#df$education <- as.factor(df$education)
+#df$default <- as.factor(df$default)
+#df$housing <- as.factor(df$housing)
+#df$loan <- as.factor(df$loan)
+#df$contact <- as.factor(df$contact)
+#df$month <- as.factor(df$month)
+#df$poutcome <- as.factor(df$poutcome)
+df$y <- as.factor(df$y)
+
+str(df)
+```
+We see that we have different data structures. We will need them to be numerical.
+Lets split the data.
+```{r}
+set.seed(1234555)
+row_Count <- floor(round(nrow(df)*2.0/3))
+train_Data <- sample(seq_len(nrow(df)), size = 3000)
+
+train <- df[train_Data, ]
+test <- df[-train_Data, ]
+
+y_train = train[ , which(names(train) %in% c("y"))]
+y_test = test[ , which(names(test) %in% c("y"))]
+
+x_train = train[ , -which(names(train) %in% c("y"))]
+x_test = test[ , -which(names(test) %in% c("y"))]
+```
+
+And when we fit the data we are getting the following classification model:
+```{r}
+modelglm <- glm(y_train ~., data=x_train, family="binomial")
+
+summary(modelglm)
+```
+
+We have more than expected columns because the model makes one-hot encoded attributes based on the categories. 
+The attributes that are significant to the model are **contactunknown, monthoct, duration, poutcomesuccess, monthnov, monthmar**. 
+
+To get the prediction we will use type = link because our response variable is binary and will assign group 1 or group 2, the 0 will be the cut-off. 
+The response with response will give cut-off 0.5
+```{r}
+predlog <- predict(modelglm, x_test,type="link")
+```
+
+```{r}
+plot(predlog,col= as.numeric(y_test)+1)
+abline(h=0)
+```
+```{r}
+TAB <- table(y_test,predlog>0)
+
+1-sum(diag(TAB))/sum(TAB)
+```
+ 
+From the scatter plot we can see how many miss-classifications we have for both the classes. The red class (which is the NO) is better classified than the YES class. 
+Let's see the number of the output variable:
+
+```{r}
+table(y_test)
+```
+
+We can clearly see that we have unbalanced data set. Even though that we have low miss-classification error, we can see from the scatter plot that out minority class is miss classified. 
+
+We can see that from our confusion matrix:
+
+```{r}
+table(y_test, predlog>0)
+```
+We can see the false positives for class YES, how bad it is classified.
+
+
+## Assigninig weights
+
+Lets assign weights to the outcome variable to see if it can help us lower the miss classification rate for class "YES".
+We will multiply the output variable and then combine with another coefficient which will assign more weight to "yes" class.
+
+```{r}
+wg <- list(2, 4, 8, 12, 16, 20)
+id <- list(1, 2, 4, 8)
+dicts <- {}
+
+for (x in wg) {
+  for (y in id) {
+    modelglm2 <- glm(y_train ~., data=x_train, family="binomial", weights = ((as.numeric(y_train) * x) + y))
+    predlog2 <- predict(modelglm2, x_test,type="link")
+    
+    print(paste0("For x we have:", x, " For y we have: ", y))
+    
+    TAB <- table(y_test,predlog2>0)
+    
+    print(table(y_test, predlog2>0))
+    print("*********************************************************")
+  }
+}
+
+dicts
+```
+
+Basically we can see that we have to make compromise on based on the confusion matrix. We can predict better the "YES" class but we will have false positives on the "NO" class.
+Based on the output I will give x = 8 and y = 1 as weight coefficients. 
+
+Lets train second model with assigned wights...
+```{r}
+modelglm2 <- glm(y_train ~., data=x_train, family="binomial", weights = ((as.numeric(y_train) * 8) + 1))
+
+summary(modelglm2)
+```
+
+```{r}
+predlog2 <- predict(modelglm2, x_test,type="link")
+```
+
+```{r}
+plot(predlog2,col= as.numeric(y_test)+1)
+abline(h=0)
+```
+
+Now we have the following predictions:
+```{r}
+TAB <- table(y_test,predlog2>0)
+
+1-sum(diag(TAB))/sum(TAB)
+
+table(y_test, predlog2>0)
+```
+
+And the previous model gives us:
+```{r}
+table(y_test, predlog>0)
+```
+Managed to reduce the "YES" class predictions with 29 but now our model predicts 39 false positives more.
+And Also we can see that nearly all attributes from our weighted model are significant. 
+
+
+## Stepwise selection
+
+```{r}
+step_model <- step(modelglm2, direction="backward")
+summary(step_model)
+```
+
+```{r}
+predlog3 <- predict(step_model, x_test,type="link")
+table(y_test, predlog3>0)
+```
+
+We don't have such an improvement since step model didn't exclude lot of attributes, since the majority of them were significant.
+
+
+# Exercise 2
+
+Lets load the data:
+```{r}
+library(ISLR)
+library(ggplot2)
+library(ggfortify)
+library(MASS)
+library(cvTools)
+library(glmnet)
+```
+
+```{r}
+data(Khan)
+df2 <- Khan
+
+str(df2)
+```
+
+```{r}
+xtrain <- as.data.frame(df2$xtrain)
+xtest <- as.data.frame(df2$xtest)
+
+ytrain <- df2$ytrain
+ytest <- df2$ytest
+```
+
+```{r}
+str(xtrain)
+```
+Our data has dimensions 63 observations and 2308 attributes
+
+
+I will plot some of the attributes to see how distributed their values are:
+```{r}
+for (i in list("V1", "V10", "V20", "V40", "V30", "V15", "V60", "V5", "V25", "V35", "V45")) {
+  hist(xtrain[[i]])
+}
+```
+
+We can see that the attributes are not normally distributed. For some attributes even the center is not 0 and the LDA one of the assumptions is that each variable is Gaussian distributed.
+Also LDA is performing bad when we have more attributes than the observations.
+
+```{r}
+summary(xtrain[, 1:14])
+```
+
+Lets try to see the evaluation of LDA, QDA and Logistic regression
+```{r}
+lda.cv <- lda(ytrain~.,data=xtrain,CV=TRUE)
+(TAB <- table(ytrain,lda.cv$class))
+
+print(paste0("Misclassification rate of CV: ", 1-sum(diag(TAB))/sum(TAB)))
+```
+
+We have really big error as well we can see the confusion matrix. Our model is predicting randomly at this point.
+And with cv Logistic Regression:
+```{r}
+library(glmnet)
+
+modelglm3 <- cv.glmnet(as.matrix(xtrain), ytrain, family="multinomial")
+pred3 <- drop(predict(modelglm3,newx=as.matrix(xtrain), type="class"))
+
+plot(modelglm3)
+```
+```{r}
+(TAB <- table(ytrain,pred3))
+print(paste0("Misclassification rate of CV: ", 1-sum(diag(TAB))/sum(TAB)))
+```
+
+We can see how bad LDA vs Logistic regression is performing. We have 0 missclassificaiton rate on the training data with logistic regression. 
+LDA consists of statistical properties of your data, calculated for each class. For a single input variable (x) this is the mean and the variance of the variable for each class. For multiple variables, this is the same properties calculated over the multivariate Gaussian, namely the means and the covariance matrix.
+
+The probability for each class is just the sum of the coefficients times the covariates, exponentiated, and normalized by the sum of that thing for all classes.
+
+```{r}
+coeff2dt <- function(fitobject, s) {
+  coeffs.list <- c()
+  for (i in 1:4) {
+  coeffs <- coef(fitobject, s)[[i]] 
+  coeffs.list <- c(coeffs.list, coeffs@Dimnames[[1]][coeffs@i + 1])
+  }
+  return(coeffs.list)
+}
+unique_coef <- unique(coeff2dt(fitobject = modelglm3, s="lambda.1se"))
+unique_coef
+```
+```{r}
+plot(xtrain$V1, ytrain, xlab='V1', ylab='Target class')
+```
+```{r}
+plot(xtrain$V545, ytrain, xlab='V545', ylab='Target class')
+```
+
+```{r}
+plot(xtrain$V123, ytrain, xlab='V123', ylab='Target class')
+```
+```{r}
+plot(xtrain$V300, ytrain, xlab='V300', ylab='Target class')
+```
+As I can tell, one of the classes is distinguishable from other classes. We can see how well on V1, V545 and V123 one of the classes is separated form the others. The model takes those attributes becuase they separate one class vs the rest.
+
+
+```{r}
+newmod <- glmnet(as.matrix(xtrain), ytrain, family='multinomial', lambda = modelglm3$lambda.1se)
+ypred <- predict(newmod, newx = as.matrix(xtest))
+confusion <- confusion.glmnet(newmod, newx = as.matrix(xtest), newy = ytest)
+misclass <- 1 - sum(diag(confusion)) / nrow(xtest)
+print('Confusion table:')
+confusion
+print('Misclassification error:')
+misclass
+```
+
+As we can see for our last model, is still fits prefect our data. Either the model overfits of the classes for the model are really well distinguishable.
+

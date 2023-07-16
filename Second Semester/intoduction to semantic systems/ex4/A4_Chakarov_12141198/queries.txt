@@ -1,0 +1,59 @@
+QUERY 1
+
+PREFIX ex: <http://semantics.id/ns/example/film#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+INSERT  {
+    ex:hasSpokenLanguage2 rdf:type owl:DatatypeProperty;
+                        rdfs:domain ex:Film;
+                        rdfs:range xsd:string.
+    	?movie ex:hasSpokenLanguage2 "de" .
+  }
+where{
+?movie a ex:Film;
+       ex:fullName "Dracula";
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+QUERY 2
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX ex: <http://semantics.id/ns/example/film#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+INSERT {
+  ex:revenueUpdated rdf:type owl:DatatypeProperty;
+                        rdfs:domain ex:Film;
+                        rdfs:range xsd:int.
+    
+  ?film ex:revenueUpdated "10"^^xsd:int.
+}
+WHERE {
+  ?film a ex:Film;
+   ex:duration "60.0"^^xsd:double.
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+QUERY 3
+
+PREFIX ex: <http://semantics.id/ns/example/film#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+INSERT {
+    ex:customerDescription rdf:type owl:DatatypeProperty;
+                        rdfs:domain ex:Film;
+                        rdfs:range xsd:string.
+  ?film ex:customerDescription "Best Movie in the history of Movies!"
+}
+where { 
+	?film a ex:Film .
+    ?film ex:fullName "Pulp Fiction"
+} 

@@ -1,0 +1,252 @@
+---
+title: "Task 3"
+subtitle: "for Advanced Methods for Regression and Classification"
+author: "Teodor Chakarov"
+date: 15.11.2022
+output: 
+  pdf_document:
+    toc: TRUE
+---
+
+# Exercise 1
+
+## Data Preprocess
+Let's load our College data for this exercise.
+
+```{r}
+library(MASS)
+library(glmnet)
+library(dplyr)
+library("cvTools")
+```
+
+```{r}
+compute_rmse <- function(y_true, y_pred) {
+
+   return(sqrt(mean((y_true-y_pred)^2)))
+}
+```
+
+```{r, echo=TRUE}
+data(College ,package="ISLR")
+data_col <- College
+str(data_col)
+```
+
+### Train and Test split
+We need to predict the attribute ***Apps*** (which will be our dependent variable).
+First we will get rid of the columns ***"Accept"*** and ***"Enroll"***.
+We have to convert our categorical variables to numeric one.
+
+```{r}
+data_col <- data_col %>% 
+  mutate(Apps = log(Apps))
+```
+
+
+```{r}
+data_col2 <- data_col[ , -which(names(data_col) %in% c("Accept", "Enroll"))]
+data_col2$Private <- as.numeric(data_col2$Private)
+str(data_col2)
+```
+
+```{r}
+data_col2$Private[data_col2$Private == 1] <- 0
+data_col2$Private[data_col2$Private == 2] <- 1
+
+#ifelse(df$col == "Yes", 1, 0)
+```
+
+I am picking 2/3rd random data indexes of the data for the training set and 1/3 for the testing.
+```{r}
+set.seed(16)
+
+## 2/3 of the sample size
+smp_size <- floor(round(nrow(data_col2)*2/3))
+train_ind <- sample(seq_len(nrow(data_col2)), size = smp_size)
+smp_size
+```
+
+Getting the sample size. Lets now split the data into train and test while also separating the dependent variable with the independent once.
+
+```{r}
+train <- data_col2[train_ind, ]
+test <- data_col2[-train_ind, ]
+
+# Setting the y to be "Apps"
+y_train = train[ , which(names(train) %in% c("Apps"))]
+y_test = test[ , which(names(test) %in% c("Apps"))]
+
+# Removing the predictive variable from the training and testing sets.
+x_train = train[ , -which(names(train) %in% c("Apps"))]
+x_test = test[ , -which(names(test) %in% c("Apps"))]
+
+``` 
+
+
+## Linear Regression
+
+```{r}
+lin_reg <- lm(y_train ~ ., data = x_train)
+
+cv_model <- cvFit(lm, formula=y_train ~ ., data=x_train, y=y_train, cost=rmspe, K=5, seed = 16)
+cv_model
+```
+
+
+```{r}
+lm_preds <- predict(lin_reg, x_test)
+
+plot(y_test,lm_preds)
+abline(c(0,1))
+```
+
+```{r}
+compute_rmse(y_test, lm_preds)
+```
+
+
+
+## Ridge Regression
+Lets fit our data in Ridge Regression
+
+```{r}
+ridge_model <- lm.ridge(y_train ~., data=x_train, lambda=seq(0,15, by=0.2))
+plot(ridge_model$lambda,ridge_model$GCV,type="l")
+```
+
+```{r}
+ridge_model$lambda[which.min(ridge_model$GCV)]
+```
+
+We can see now how our GCV score lowers around 2,2 and then it raises again. So I will take the lambda at 2,2
+
+```{r}
+lambda_opt <- ridge_model$lambda[which.min(ridge_model$GCV)]
+```
+
+```{r}
+plot(0,0,xlim=range(ridge_model$lambda),ylim=range(ridge_model$coef),
+     type="n",xlab="lambda",ylab="beta")
+for(i in 1:nrow(ridge_model$coef))
+{
+   lines(ridge_model$lambda,ridge_model$coef[i,],col=i)
+}
+legend("topright", legend=rownames(ridge_model$coef), lty=rep(1,14),col=1:14, cex=0.65)
+abline(v=lambda_opt, lty=2)
+
+```
+
+We can see based on the lines the beta coefficients for each attribute based on certain lambda value. And on the horizontal line sits our optimal lambda value and respectively the coefficients for the attributes. 
+
+
+```{r}
+ridge_model$coef[,12] 
+```
+Those are the regression coefficients for our optimal model. 
+
+
+Lets make some predictions...
+
+```{r}
+# Prediction with Ridge:
+ridge_model2 <- lm.ridge(y_train ~., data=x_train, lambda = lambda_opt, )
+ridge_model2$coef # coefficients for scaled x
+```
+
+```{r}
+ridge_coef <- coef(ridge_model2)
+ridge_coef # coefficients in original scale + intercept
+```
+
+
+```{r}
+pred_ridge <- as.matrix(cbind(rep(1,length(y_test)),x_test))%*%ridge_coef
+
+plot(y_test,pred_ridge)
+abline(c(0,1))
+```
+```{r}
+compute_rmse(y_test, pred_ridge)
+```
+
+In comparison from the previous exercise we have:
+ - PCR: 0.5674299
+ - PLSR: 0.5672898 
+ - Ridge Regression: 0.5648764
+
+
+## Lasso Regression
+
+```{r}
+lasso <- glmnet(as.matrix(x_train),y_train, lambda=0)
+print(lasso)
+
+```
+```{r}
+plot(lasso)
+```
+
+We can see how one of our attributes is changing rapidly with changing the lambda coefficient.  The bigger the L1 is the less regularized is. The default parameter for alpha is 1. 
+
+
+Lets try the cross validation:
+
+```{r}
+lasso_cv <- cv.glmnet(as.matrix(x_train),y_train)
+print(lasso_cv)
+```
+
+```{r}
+plot(lasso_cv)
+```
+
+On the left side we have our full model but as we go towards log(lambda) = 0 the more regularization we apply and the smaller model we have. 
+
+```{r}
+coef(lasso_cv,s="lambda.1se")
+```
+
+We can see because of the regularization from Lasso, how some of our attributes are not used. We are obtaining the moder from the second vertical line. 
+
+```{r}
+pred_lasso <- predict(lasso_cv, newx=as.matrix(x_test),s="lambda.1se")
+
+plot(y_test, pred_lasso)
+abline(c(0,1))
+```
+
+```{r}
+compute_rmse(y_test, pred_lasso)
+```
+
+
+
+
+```{r}
+coef(lasso_cv,s="lambda.min")
+pred_lasso2 <- predict(lasso_cv, newx=as.matrix(x_test),s="lambda.min")
+
+plot(y_test, pred_lasso2)
+abline(c(0,1))
+```
+
+```{r}
+compute_rmse(y_test, pred_lasso2)
+```
+
+In comparison from the previous exercise we have:
+ - PCR: 0.5674299
+ - PLSR: 0.5672898 
+ - Ridge Regression: 0.5648764
+ - Lasso Regression min + 1 std error: 0.5897333
+ - Lasso Regression min: 0.5649176
+
+
+
+
+
+
+
+
+

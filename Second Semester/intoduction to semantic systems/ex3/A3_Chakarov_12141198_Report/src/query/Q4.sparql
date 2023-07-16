@@ -1,0 +1,9 @@
+PREFIX : <http://semantics.id/ns/example/film#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+Select DISTINCT ?label {
+ ?x :releaseYear ?releaseYear.
+ ?x :hasGenre ?hasGenre .
+ ?x rdfs:label ?label.
+ Filter(?releaseYear > "2014"^^xsd:integer && ?releaseYear < "2020"^^xsd:integer)
+}

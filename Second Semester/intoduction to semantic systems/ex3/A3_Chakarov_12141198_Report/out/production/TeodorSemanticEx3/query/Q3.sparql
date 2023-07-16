@@ -1,0 +1,8 @@
+PREFIX : <http://semantics.id/ns/example/film#>
+Construct {
+ ?x :hasFilmStudio ?FilmStudio.
+ ?x :hasScriptWriter ?ScriptWriter.
+} Where {
+?x :hasScriptWriter ?ScriptWriter.
+ ?x :hasFilmStudio ?FilmStudio.
+}

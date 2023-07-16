@@ -1,0 +1,177 @@
+---
+title: "Linear_regression"
+author: "Teodor Chakarov"
+date: '2022-10-14'
+output: pdf_document
+---
+
+```{r}
+library(ISLR)
+library("ggplot2")
+data(Auto)
+plot(Auto)
+```
+
+```{r}
+attach(Auto)
+```
+
+
+```{r}
+plot(mpg~horsepower)
+```
+
+```{r}
+plot(log(mpg)~horsepower)
+
+res <- lm(log(mpg)~horsepower)
+abline(res,col=2,lwd=2)
+detach(Auto)
+```
+
+
+```{r}
+res <- lm(log(mpg)~cylinders+displacement+horsepower+weight+acceleration)
+summary(res)
+```
+
+The Estimate columns show the coefficients of the variables in the model (independent values). We have the Standart error. P-values show that from our model ***Intercept, horsepower and weight are significant for the output value***.
+
+# Build Data and Fit into Linear Model
+Lets generate new data
+We are generating Uniform Distributed data (60 datapoints in 3 columns).
+
+We calculate **y** as matrix product of **x** with the truth vector + small random noise from a normal distribution.
+```{r}
+set.seed(123)
+x <- matrix(runif(60), ncol = 3)
+y = x %*% c(1, 2, 0) + 0.1 * rnorm(20)
+colnames(x) <- paste("x", 1:3, sep = "")
+d <- data.frame(x, y = y)
+plot(d)
+```
+
+Based on the last column we can see the stronger coefficient in x2 and y because the coefficient 2 which is higher than the all
+
+```{r}
+lm3 <- lm(y~x1+x2+x3, data = d) # -1 is no intercept
+lm3 
+```
+
+We can see by the estimated coefficients 
+
+```{r}
+summary(lm3)
+```
+
+We can see they **x2 and x3** are highly significant.
+
+Let's build a linear Model with 2 variables
+
+```{r}
+lm2 <- lm(y ~ x1 + x2, data = d)
+lm2
+
+```
+
+ 
+# Build correlated data and Fit into Linear model
+```{r}
+set.seed(123)
+x1 <- runif(100)
+#x1 +0,5 plus small error
+y <- x1 + 0.5*rnorm(100)
+
+plot(x1, y)
+```
+
+```{r}
+summary(lm(y~x1))
+```
+
+We have good Coefficients and high significance to x1.
+
+Lets generate x2 but not gonna be linearly related to x1 or y
+```{r}
+x2 <- runif(100)
+plot(data.frame(y, x1, x2))
+```
+
+```{r}
+summary(lm(y ~ x1 + x2))
+```
+
+As we can see, x2 dont have high significanse. 
+
+```{r}
+plot(data.frame(y, x1, x2))
+```
+
+As we can see, x1 is linearly related to y.
+
+
+```{r}
+x3 <- x1 + 0.1 * runif(100) #copy of x1 + some noise
+plot(data.frame(y, x1, x2, x3))
+```
+
+x1 has a linear relationship to y. x1 is highly correlated with x3
+
+```{r}
+res <- lm(y ~ x1 + x3)
+summary(res)
+```
+
+Now we have a problem, no variable which has high significanse. If we have a variables which are not correlated then we dont have this problem.
+
+
+```{r}
+cor(x1, x3)
+```
+
+
+To get the X design matrix
+```{r}
+X <- model.matrix(res)
+X
+```
+
+Matrix multiplication - Transpose X with X
+```{r}
+t(X)%*%X
+```
+
+We have pretty high numbers after the multiplication
+
+
+The inverse product of the matrix multiplicaiton.
+```{r}
+solve(t(X)%*%X)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

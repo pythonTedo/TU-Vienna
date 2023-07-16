@@ -1,0 +1,68 @@
+@prefix rr:     <http://www.w3.org/ns/r2rml#> .
+@prefix carml:  <http://carml.taxonic.com/carml/> .
+@prefix rml:    <http://semweb.mmlab.be/ns/rml#> .
+@prefix ql:     <http://semweb.mmlab.be/ns/ql#> .
+PREFIX fnml:    <http://semweb.mmlab.be/ns/fnml#>
+
+@prefix :  <http://semantics.id/example#> .
+
+<#film> a rr:TriplesMap ;
+
+    rml:logicalSource [
+        rml:source [ a carml:Stream; ];
+        rml:referenceFormulation ql:JSONPath ;
+        rml:iterator "$.[*]" ;
+    ];
+    rr:subjectMap [
+        rr:template "http://semantics.id/film/{original_title}";
+        rr:class :Film
+    ];
+    rr:predicateObjectMap [
+        rr:predicate :original_title ;
+        rr:objectMap [
+            rml:reference "original_title" ;
+            rr:datatype xsd:string ;
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate :hasSpokenLanguage ;
+        rr:objectMap [
+            rml:reference "spoken_languages.[*].name" ;
+            rr:datatype xsd:string ;
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate :hasProductionCountry ;
+        rr:objectMap [
+            rml:reference "production_countries.[*].name" ;
+            rr:datatype xsd:string ;
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate :hasGenre ;
+        rr:objectMap [
+            rml:reference "genres.[*].name" ;
+            rr:datatype xsd:string ;
+        ];
+    ];
+.
+
+<#genre> a rr:TriplesMap ;
+    rml:logicalSource [
+        rml:source [ a carml:Stream; ];
+        rml:referenceFormulation ql:JSONPath ;
+        rml:iterator "$.[*].genres.[*]" ;
+    ];
+    rr:subjectMap [
+        rr:template "http://semantics.id/genres/{name}";
+        rr:class :Genre
+    ];
+    rr:predicateObjectMap [
+        rr:predicate :name ;
+        rr:objectMap [
+            rml:reference "name" ;
+            rr:datatype xsd:string ;
+        ];
+    ];
+.
+

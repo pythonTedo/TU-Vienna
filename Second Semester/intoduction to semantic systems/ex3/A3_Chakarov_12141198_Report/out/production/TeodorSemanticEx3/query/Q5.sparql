@@ -1,0 +1,9 @@
+PREFIX : <http://semantics.id/ns/example/film#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?label ?name {
+?x a :Film .
+?x rdfs:label ?label .
+?x :hasScriptWriter ?writer.
+?writer :fullName ?name
+}
+Order by DESC(?writer)

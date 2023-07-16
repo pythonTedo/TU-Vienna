@@ -1,0 +1,7 @@
+PREFIX : <http://semantics.id/ns/example/film#>
+Select ?name ?bday {
+ ?x :hasActor ?hasActor .
+?hasActor :fullName ?name.
+ ?hasActor :dateOfBirth ?bday.
+}
+Order by ASC(?bday)

@@ -1,0 +1,13 @@
+PREFIX : <http://semantics.id/ns/example/film#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+select ?title ?name
+where{
+?film a :Film .
+?film rdfs:label ?title
+{?film :hasActor ?crew} union
+{?film :hasScriptWriter ?crew} union
+{?film :hasDirector ?crew}
+?crew :fullName ?name .
+}
+order by ?name

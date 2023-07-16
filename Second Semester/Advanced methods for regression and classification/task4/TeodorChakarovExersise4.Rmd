@@ -1,0 +1,187 @@
+---
+title: "Task 4"
+subtitle: "for Advanced Methods for Regression and Classification"
+author: "Teodor Chakarov"
+date: 23.11.2022
+output: 
+  pdf_document:
+    toc: TRUE
+---
+
+# Exercise 1
+
+## Load data and preprocess
+Let's load csv file
+
+```{r}
+library(MASS)
+library(cvTools)
+library(ggplot2)
+library(ggfortify)
+library(ipred)
+library(dplyr)
+library(imbalance)
+library(ROSE)
+```
+
+
+```{r}
+df <- read.csv("hcvdat1.csv")
+str(df)
+```
+
+We have 11 numeric attributes, and 2 categorical once.
+We are going to drop the NaN values and set the categorical to factors.
+
+```{r}
+df <- na.omit(df)
+
+df$Sex <- as.numeric(as.factor(df$Sex))
+```
+
+```{r}
+str(df)
+```
+
+## Compute PCA
+```{r}
+x <- df[, -which(names(df) %in% c("Category"))]
+
+mean_train <- apply(x, 2, mean)
+sd_train <- apply(x, 2, sd)
+
+x_scaled <- (data.frame(scale(x, center=mean_train, scale = sd_train)))
+
+# Apply PCA
+comps <- princomp(x_scaled, cor=TRUE, scores=TRUE)
+
+comps
+```
+
+
+```{r}
+autoplot(comps, df, colour = 'Category')
+```
+We can see here the clusters of the given classes. The red dots for Blood Donor are distinguishable with cirrhosis. The Hepatitis on the other hand are within the blood doner cluster. We would need here another dimension because we can't draw a hyper-plane which can separate the data as it is now. Our classification model can't calculate the separation point.
+
+
+## Task 2: Fitting in models
+
+Splitting the data to train and test.
+
+```{r}
+set.seed(1234555)
+row_Count <- floor(round(nrow(df)*2.0/3))
+train_Data <- sample(seq_len(nrow(df)), size = row_Count)
+
+```
+
+
+```{r}
+df$Category <- as.factor(df$Category)
+
+train <- df[train_Data, ]
+test <- df[-train_Data, ]
+
+y_train = train[ , which(names(train) %in% c("Category"))]
+y_test = test[ , which(names(test) %in% c("Category"))]
+
+x_train = train[ , -which(names(train) %in% c("Category"))]
+x_test = test[ , -which(names(test) %in% c("Category"))]
+
+summary(x_train)
+```
+
+### Linear Discrimant Analysis
+
+```{r}
+mod.lda<-lda(y_train ~ .,data=x_train)
+predict.lda <- predict(mod.lda, x_test)$class
+(TAB<-table(y_test,predict.lda ))
+
+```
+We can see when we train without CV, that on test data we have Cirrhosis which is the most miss classified.
+
+
+Let's check now the miss classification error.
+```{r}
+lda.cv <- lda(y_train~.,data=x_train,CV=TRUE)
+(TAB <- table(y_train,lda.cv$class))
+
+print(paste0("Misclassification rate of CV: ", 1-sum(diag(TAB))/sum(TAB)))
+```
+
+We can see that we don't have big miss classification error on both training and testing data. 
+
+### Quadratic Discrimant Analysis
+
+```{r}
+qda.cv <- qda(y_train~.,data=x_train,CV=TRUE)
+(TAB <- table(y_train,qda.cv$class))
+
+print(paste0("Misclassification rate of CV: ", 1-sum(diag(TAB))/sum(TAB)))
+```
+
+I am getting bigger miss classification error with the qda model.
+
+```{r}
+table(y_train)
+```
+
+```{r}
+table(y_test)
+```
+
+Within couple of times qda returned an error which was "some group is too small for 'qda'" In order to make it work i need to stratify split the data.
+
+## Impoving
+### Oversample
+Since we have heavily imbalanced data in regard of the classes, we can split the date with stratify method, which is diving the train and test data based on proportionally separation of the classes in the sets. 
+
+Another technique can be under or over-sampling. In this case we can make the unbalanced data more fair when we train and give equal amount of examples on the training model.
+
+```{r}
+df_no_hepa <- df[df$Category != "Hepatitis",]
+df_no_cirr <- df[df$Category != "Cirrhosis",]
+```
+
+```{r}
+data_no_Hepa <- df_no_hepa[df_no_hepa$Category != "Hepatitis",]
+data_cirrsample <- ROSE(Category ~ ., data=data_no_Hepa, seed=1234)$data
+
+data_no_Cirr <- df_no_cirr[df_no_cirr$Category != "Cirrhosis",]
+data_heppasample <- ROSE(Category ~ ., data=data_no_Cirr, seed=1234)$data
+
+data_cirr <- data_cirrsample[data_cirrsample$Category == "Cirrhosis",]
+data_rose <- rbind(data_heppasample, data_cirr)
+table(data_rose$Category)
+```
+
+Now we have equal amount of classes and lets fit it in lda model:
+```{r}
+lda_cv_rose <- lda(Category~.,data=data_rose,CV=TRUE)
+(TAB <- table(data_rose$Category,lda_cv_rose$class))
+
+print(paste0("Misclassification rate of CV with rose: ", 1-sum(diag(TAB))/sum(TAB)))
+```
+Our miss classification error raised at 18% but that's with almost 94 times more generated samples.
+
+### Dimensionallity reduction
+
+```{r}
+prin_comps <- princomp(x_train)
+data_pca <- prin_comps$scores[,1:9]
+data_pca <- as.data.frame(data_pca)
+```
+
+```{r}
+lda_cv_pca <- lda(y_train~.,data=data_pca,CV=TRUE)
+(TAB <- table(lda_cv_pca$class,y_train))
+
+print(paste0("Misclassification rate of CV for QDA with principal componants: ", 1-sum(diag(TAB))/sum(TAB)))
+```
+
+After the PCA we have little bit less of an error and also more True positives of the Hepatitis.
+
+
+

@@ -1,0 +1,331 @@
+---
+title: "Task 2"
+subtitle: "for Advanced Methods for Regression and Classification"
+author: "Teodor Chakarov"
+date: 07.11.2022
+output: 
+  pdf_document:
+    toc: TRUE
+---
+# Exercise 1
+
+## Compute Cross Validation
+Let's load our College data for this exercise.
+
+```{r}
+library("cvTools")
+library("leaps")
+library("pls")
+library("dplyr")
+```
+
+```{r, echo=TRUE}
+data(College ,package="ISLR")
+data_col <- College
+str(data_col)
+```
+
+
+### Train and Test split
+We need to predict the attribute ***Apps*** (which will be our dependent variable).
+First we will get rid of the columns ***"Accept"*** and ***"Enroll"***.
+We have to convert our categorical variables to numeric one.
+
+
+```{r}
+data_col <- data_col %>% 
+  mutate(Apps = log(Apps))
+```
+
+
+```{r}
+data_col2 <- data_col[ , -which(names(data_col) %in% c("Accept", "Enroll"))]
+data_col2$Private <- as.numeric(data_col2$Private)
+str(data_col2)
+```
+
+
+```{r}
+data_col2$Private[data_col2$Private == 1] <- 0
+data_col2$Private[data_col2$Private == 2] <- 1
+```
+
+```{r}
+data_col2
+```
+
+
+
+I am picking 2/3rd random data indexes of the data for the training set and 1/3 for the testing.
+```{r}
+set.seed(16)
+
+## 2/3 of the sample size
+smp_size <- floor(round(nrow(data_col2)*2/3))
+train_ind <- sample(seq_len(nrow(data_col2)), size = smp_size)
+smp_size
+```
+
+
+Getting the sample size. Lets now split the data into train and test while also separating the dependent variable with the independent once.
+
+```{r}
+train <- data_col2[train_ind, ]
+test <- data_col2[-train_ind, ]
+
+# Setting the y to be "Apps"
+y_train = train[ , which(names(train) %in% c("Apps"))]
+y_test = test[ , which(names(test) %in% c("Apps"))]
+
+# Removing the predictive variable from the training and testing sets.
+x_train = train[ , -which(names(train) %in% c("Apps"))]
+x_test = test[ , -which(names(test) %in% c("Apps"))]
+
+``` 
+
+```{r}
+dim(x_train)
+
+dim(x_test)
+```
+
+
+### Linear Model Fit with Cross Validation
+Now we will fit our training data to the linear model while using Cross Validation technique for the training process.
+
+```{r}
+lin_reg <- lm(y_train ~ ., data = x_train)
+
+cv_model <- cvFit(lm, formula=y_train ~ ., data=x_train, y=y_train, cost=rmspe, K=5, seed = 16)
+
+```
+
+```{r}
+cv_model
+```
+This is the average RMSPE error which is little higher than the previous model.
+
+```{r}
+compute_rmse <- function(y_true, y_pred) {
+
+   return(sqrt(mean((y_true-y_pred)^2)))
+}
+```
+
+
+```{r}
+pred_lm <- predict(lin_reg, x_train)
+compute_rmse(y_train, pred_lm)
+```
+
+```{r}
+pred_lm_test <- predict(lin_reg, x_test)
+compute_rmse(y_test, pred_lm_test)
+```
+
+This is the RMSE on the linear regression alone.
+
+
+## Best Subset Regression
+
+```{r}
+subs_reg <- regsubsets(y_train ~., data=x_train, nbest = 3, nvmax=10)
+summary(subs_reg)
+
+```
+
+Now we can compare which attributes gives us the bes models for each sizes. For example:
+  - Variables for model with 1 attribute are **F.Undergrad (model1),P.Undergrad(model2), Private(model3)**
+  - Variables for model with 2 attribute are **F.Undergrad and Expend (model1), F.Undergrad and Room.Board (model2) and etc.**
+
+This output wont help use because we dont have information base on metric which model is actually the best one.
+
+```{r}
+plot(subs_reg)
+```
+
+
+```{r}
+subs_reg_summary <- summary(subs_reg)
+
+str(subs_reg)
+```
+
+```{r}
+BIC <- summary(subs_reg)$bic
+plot(BIC)
+```
+Based on the Scatter plot we can select the index with the lowest BIC. Which is the model with the 4 attrbibutes (index 10): **F.Undergrad and Room.Board, Exprend and Grad.Rate**
+
+```{r}
+chosen_data <- data_col[ , which(names(data_col) %in% c("F.Undergrad", "Room.Board", "Exprend", "Grad.Rate", "Apps"))]
+str(chosen_data)
+```
+
+We will do the train test split again and fit the data in the linear model with cross validation.
+```{r}
+train_2 <- chosen_data[train_ind, ]
+test_2 <- chosen_data[-train_ind, ]
+
+# Setting the y to be "Apps"
+y_train_2 = train_2[ , which(names(train_2) %in% c("Apps"))]
+y_test_2 = test_2[ , which(names(test_2) %in% c("Apps"))]
+
+# Removing the predictive variable from the training and testing sets.
+x_train_2 = train_2[ , -which(names(train_2) %in% c("Apps"))]
+x_test_2 = test_2[ , -which(names(test_2) %in% c("Apps"))]
+```
+
+```{r}
+cvFit(lm, formula=y_train ~ ., data=x_train_2, y=y_train_2, cost=rmspe, K=5, seed = 16)
+
+```
+
+We get higher number as before. But we reduced our variables to 3.
+
+```{r}
+lm_2 <- lm(y_train ~ ., data=x_train_2)
+summary(lm_2)
+```
+
+Here we can see that all of the attributes as significant for our model.
+
+```{r}
+pred_train_2 <- predict(lm_2, x_train_2)
+
+compute_rmse(y_train_2, pred_train_2)
+
+```
+
+## Compute Partial component regression
+
+Now we will try to compute the PCR, getting rid of the co linearity of the data while we do also dimesionalitiy reduction.
+
+```{r}
+pcr_model <- pcr(y_train ~., data=x_train, scale=TRUE,
+                 validation="CV", segments=10, segment.type="random")
+summary(pcr_model)
+
+```
+
+As we can see we have 15 components and 10 cross-validations are being done. The metric is root-mean-squared-error. The data is being scaled.
+With this dataset we can inspect that the first 9 components are explaining 90% of the data.
+
+```{r}
+plot(pcr_model, plottype = "validation", val.type = "RMSEP", legend = "topright")
+
+```
+
+We can see that the RMSEP error is smaller at 13-14 attributes as we have the smallest RMSEP CV error 2124. Even though we can have 90% of the information gain based on the first 9 components.
+
+
+```{r}
+predplot(pcr_model, ncomp=13, asp=1, line=TRUE)
+```
+
+The predicted RMSE for the train data is:
+```{r}
+preds_pcr_train <- predict(pcr_model, x_train, ncomp=13)
+compute_rmse(y_train, preds_pcr_train)
+
+```
+
+The predicted RMSE for the testing data is:
+```{r}
+preds_pcr_test <- predict(pcr_model,newdata=x_test,ncomp=13)
+#  RMSE
+compute_rmse(y_test, preds_pcr_test)
+```
+
+```{r}
+plot(y_test, preds_pcr_test)
+```
+
+## Partial least squares regression
+
+
+```{r}
+plsr_model <- plsr(y_train ~., data=x_train, scale=TRUE,
+                 validation="CV", segments=10, segment.type="random")
+summary(plsr_model)
+```
+
+
+```{r}
+plot(plsr_model, plottype = "validation", val.type = "RMSEP", legend = "topright")
+
+```
+
+We can see in comparison to the PCR model, this models converges faster and the RMSEP is minimizing way earlier. Around 5 components is hitting 2148 as error. The error is a little bit more than the PCR but uses less attributes.
+
+
+
+```{r}
+predplot(plsr_model, ncomp=6, asp=1, line=TRUE)
+```
+
+
+We can see that the data is still heteroscedastic with outlyers. 
+
+The predicted RMSE for the train data is:
+```{r}
+preds_plsr_train <- predict(plsr_model, x_train, ncomp=6)
+compute_rmse(y_train, preds_plsr_train)
+```
+
+The predicted RMSE for the testing data is:
+```{r}
+preds_plsr_test <- predict(plsr_model,newdata=x_test,ncomp=6)
+#  RMSE
+compute_rmse(y_test, preds_plsr_test)
+```
+
+```{r}
+plot(y_test, preds_pcr_test)
+```
+
+
+As for final conclusion we can say that PLSR method was better in therms of reducing the dimensions and also scoring less for the test data as the basic Linear model and PCR.
+
+
+## PCR by hand
+
+```{r}
+mean_train <- apply(x_train, 2, mean)
+sd_train <- apply(x_train, 2, sd)
+```
+
+```{r}
+x_train_scaled <- (data.frame(scale(x_train, center=mean_train, scale = sd_train)))
+
+# Apply PCA
+comps <- princomp(x_train_scaled, cor=TRUE, scores=TRUE)
+
+df_train <- data.frame(comps$scores[, 1:12])
+
+model <- lm(y_train ~ ., df_train)
+
+```
+
+
+
+```{r}
+x_test_scaled <- data.frame(scale(x_test, center = mean_train, scale = sd_train))
+
+x_test_multi <- data.frame(as.matrix(x_test_scaled) %*% as.matrix(comps$loadings))[, 1:12] # Picked number of components
+
+prediction <- predict(model, x_test_multi)
+
+compute_rmse(y_test, prediction)
+```
+
+```{r}
+
+plot(prediction, y_test)
+abline(a = 0, b = 1)
+```
+
+
+
+
+

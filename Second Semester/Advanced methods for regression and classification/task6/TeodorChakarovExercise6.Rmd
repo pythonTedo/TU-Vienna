@@ -1,0 +1,223 @@
+---
+title: "Task 6"
+subtitle: "for Advanced Methods for Regression and Classification"
+author: "Teodor Chakarov"
+date: 13.12.2022
+output: 
+  pdf_document:
+    toc: TRUE
+---
+
+# Regression on Splines 
+
+In this exercise we will see the different splines methods and how we can regress this data  as non-linear.
+```{r}
+library(ISLR)
+library(splines)
+
+data(Auto ,package="ISLR")
+
+df <- Auto
+
+str(df)
+```
+
+```{r}
+plot(mpg~acceleration, data = df)
+```
+This scatter plot is showing non-linearity of those two attributes. 
+
+```{r}
+df
+df <- df[order(df$acceleration),]
+```
+
+Splitting the data based on the origin group:
+
+```{r}
+american <- subset(df, origin==1)
+european <- subset(df, origin==2)
+japan <- subset(df, origin==3)
+
+mpg_eu <- european[ , which(names(european) %in% c("mpg"))]
+acc_eu <- european[ , which(names(european) %in% c("acceleration"))]
+mpg_us <- american[ , which(names(american) %in% c("mpg"))]
+acc_us <- american[ , which(names(american) %in% c("acceleration"))]
+mpg_jp <- japan[ , which(names(japan) %in% c("mpg"))]
+acc_jp <- japan[ , which(names(japan) %in% c("acceleration"))]
+```
+
+Lets see the linear functions we create with B-splines with degrees of freedom = 4
+```{r}
+matplot(acc_eu, bs(acc_eu, df = 4), type="l",lty=1)
+```
+
+## B-splines on:
+ - European cars:
+```{r}
+plot(acc_eu, mpg_eu)
+lm1 <- lm(mpg_eu ~ bs(acc_eu, df=4))
+lines(acc_eu,predict.lm(lm1,list(x=acc_eu)), col="blue")
+```
+ - United states cars:
+```{r}
+plot(acc_us, mpg_us)
+lm1 <- lm(mpg_us ~ bs(acc_us, df=4))
+lines(acc_us,predict.lm(lm1,list(x=acc_us)), col="blue")
+```
+ - Japanese cars:
+```{r}
+plot(acc_jp, mpg_jp)
+lm1 <- lm(mpg_jp ~ bs(acc_jp, df=4))
+lines(acc_jp,predict.lm(lm1,list(x=acc_jp)), col="blue")
+```
+As we saw, we created separate linear regression models for each category of cars based on the 3 categories we have. As predicitve values we used acceleration and for dependent value we use the mpg. We can see this time we dont have singe straight line but a curved spline which tries to describe the best ways the given values.
+
+## Natural Cubic splines on:
+- European cars:
+
+```{r}
+plot(acc_eu, mpg_eu)
+lm1 <- lm(mpg_eu ~ ns(acc_eu, df=4))
+lines(acc_eu,predict.lm(lm1,list(x=acc_eu)), col="blue")
+```
+
+ - United states cars:
+```{r}
+plot(acc_us, mpg_us)
+lm1 <- lm(mpg_us ~ ns(acc_us, df=4))
+lines(acc_us,predict.lm(lm1,list(x=acc_us)), col="blue")
+```
+
+ - Japanese cars:
+```{r}
+plot(acc_jp, mpg_jp)
+lm1 <- lm(mpg_jp ~ ns(acc_jp, df=4))
+lines(acc_jp,predict.lm(lm1,list(x=acc_jp)), col="blue")
+```
+
+## Smoothing spline
+
+- European cars:
+```{r}
+plot(mpg_eu ~ acc_eu)
+spline_eu <- smooth.spline(acc_eu, mpg_eu, df=4)
+
+lines(spline_eu, col="blue")
+```
+
+ - United states cars:
+```{r}
+plot(mpg_us ~ acc_us)
+spline_us <- smooth.spline(acc_us, mpg_us, df=4)
+
+lines(spline_us, col="blue")
+```
+
+ - Japanese cars:
+```{r}
+plot(mpg_jp ~ acc_jp)
+spline_us <- smooth.spline(acc_jp, mpg_jp, df=4)
+
+lines(spline_us, col="blue")
+```
+
+We can see the different types of splines. In general they are following the same cures though the data with all using degrees of freedom = 4.
+
+
+# Regreesion on the whole data with splines
+
+```{r}
+df1 <- df[ , -which(names(df) %in% c("name"))]
+
+str(df1)
+```
+
+
+```{r}
+set.seed(16)
+
+## 2/3 of the sample size
+smp_size <- floor(round(nrow(df1)*2/3))
+train_ind <- sample(seq_len(nrow(df1)), size = smp_size)
+smp_size
+```
+
+```{r}
+train <- df1[train_ind, ]
+test <- df1[-train_ind, ]
+
+# Setting the y to be "Apps"
+y_train = train[ , which(names(train) %in% c("mpg"))]
+y_test = test[ , which(names(test) %in% c("mpg"))]
+
+# Removing the predictive variable from the training and testing sets.
+x_train = train[ , -which(names(train) %in% c("mpg"))]
+x_test = test[ , -which(names(test) %in% c("mpg"))]
+```
+
+```{r}
+str(y_train)
+str(y_test)
+
+str(x_train)
+str(x_test)
+```
+
+```{r}
+# Create the linear model with natural cubic splines
+# it should be factor because it doesnt makes sense the us < eu < jp (1, 2, 3)
+
+model1 <- lm(train$mpg ~ ns(horsepower, df = 4) + ns(displacement, df = 4) + ns(weight, df = 4) + ns(acceleration, df = 4) + factor(year) + factor(cylinders) + factor(origin), data = train)
+
+# Summarize the linear model
+summary(model1)
+```
+
+We have two different types of attributes fitted in this model:
+ 1) splines with degrees of freedom = 4, so in the summary all spline attributes exist 4 times.
+ 2) second group of attributes are th categorical ones. We just passed them in the model as we do in other linear models.
+
+We can see as well how significant each one is for the model (acceleration, weight, horsepower and year)
+
+```{r}
+y_pred <- predict(model1, x_test)
+RMSE <- sqrt(mean((y_test - y_pred)^2))
+RMSE
+```
+
+For RMSE score we have 2,87. Lets now try the stepwise model.
+
+
+## Stepwise variable selection
+
+```{r}
+fit2 <- step(lm(train$mpg ~ ns(horsepower, df = 4) + ns(displacement, df = 4) + ns(weight, df = 4) + ns(acceleration, df = 4) + factor(year) + factor(cylinders) + factor(origin), data = train), direction="both")
+
+summary(fit2)
+```
+
+The final model excludes of course cylinders and displacement but keeps the origin attribute. 
+
+# Calculate the RMSE on the test set
+```{r}
+ypred <- predict(fit2, x_test)
+RMSE2 <- sqrt(mean((y_test - ypred)^2))
+RMSE2
+
+```
+
+We have little bit more error bit with 2 attributes less. Lets plot the variables now.
+
+```{r}
+plot(test$horsepower, ypred)
+plot(test$weight, ypred)
+plot(test$acceleration, ypred)
+plot(test$year, ypred)
+plot(test$origin, ypred)
+```
+
+
+
+
+

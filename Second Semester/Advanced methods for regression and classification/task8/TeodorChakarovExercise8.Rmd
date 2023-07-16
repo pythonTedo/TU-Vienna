@@ -1,0 +1,228 @@
+---
+title: "Task 8"
+subtitle: "for Advanced Methods for Regression and Classification"
+author: "Teodor Chakarov"
+date: 03.01.2023
+output: 
+  pdf_document:
+    toc: TRUE
+---
+
+
+# Loading and splitting the data
+
+```{r}
+library(rpart)
+library(randomForest)
+```
+
+We will load the bank dataset as for exercise 5.
+
+```{r}
+df <- read.csv2("bank.csv")
+df$y <- as.factor(df$y)
+
+str(df)
+```
+
+We will take 3500 random samples for training set and the rest are for the test.
+```{r}
+set.seed(1234555)
+row_Count <- floor(round(nrow(df)*2.0/3))
+train_Data <- sample(seq_len(nrow(df)), size = 3500)
+
+train <- df[train_Data, ]
+test <- df[-train_Data, ]
+
+```
+
+```{r}
+nrow(train)
+nrow(test)
+```
+
+Lest's see the distribution of the classes on the two sets. 
+```{r}
+table(train$y)
+```
+```{r}
+table(test$y)
+```
+
+
+# Decision tree
+
+For T0, we will put cp=0 because we want the most complex tree to see how our data is being split.
+```{r}
+tree1 <- rpart(y~., data = train, method = "class", cp=0, xval=20)
+
+plot(tree1)
+text(tree1)
+```
+As we see on the plot, we have a lot of splits for our data and that makes the tree complex and deep.
+
+```{r}
+predict_tree1 <- predict(tree1, test, type="class")
+
+(TAB <- table(test$y,predict_tree1))
+
+1-sum(diag(TAB))/sum(TAB)
+```
+
+As for miss-classification error we have 0.11. It is not big but for our YES class we have small number of true positives.
+
+```{r}
+printcp(tree1)
+```
+
+```{r}
+plotcp(tree1)
+```
+For the cross validation we can see how our error changes with changing the cp complexity parameter. I will take cp=0.016 as value.
+
+```{r}
+pruned <- prune(tree1, cp=0.016)
+```
+
+
+```{r}
+plot(pruned)
+text(pruned)
+```
+We can see how our tree has less splits and it is way more simple than the previous one. 
+
+```{r}
+predict_prined <- predict(pruned, test, type="class")
+
+(TAB <- table(test$y,predict_prined))
+
+1-sum(diag(TAB))/sum(TAB)
+```
+
+And as result we see that we have less miss-classification error but we have more falsely predicted NO classes. The miss-classification error reduces because NO is the majority class and that's why this error is miss-leading. In order for our model to classify better the minor class we can try to oversample it or to apply cost function based on our YES class. 
+
+# Random Forest
+
+## Basic model
+
+```{r}
+rf <- randomForest(y ~., data = train)
+rf
+```
+
+```{r}
+predict_rf <- predict(rf, test, type="class")
+
+(TAB <- table(test$y,predict_rf))
+
+1-sum(diag(TAB))/sum(TAB)
+```
+
+We can see for the first Random Forest model we get 0.10 miss-classification error. A little bit less than our descision tree model from above.
+
+
+## Importance
+
+```{r}
+rf1 <- randomForest(y ~., data = train, importance=TRUE)
+rf1
+```
+
+```{r}
+predict_rf1 <- predict(rf1, test, type="class")
+
+(TAB <- table(test$y,predict_rf1))
+
+1-sum(diag(TAB))/sum(TAB)
+```
+
+With importance=True we get even better results. 
+
+```{r}
+plot(rf1)
+```
+We can see the developments of the miss-classification error of both classes with each tree we build. We can see the lowest line is the class **no** and the highest is class **yes**. The middle one shows us the average error. We can see that both of them are stable over time and 500 trees should be enough.
+
+```{r}
+varImpPlot(rf1)
+```
+
+We can see based on the two error measures. The top once are most important attributes. When we compare them we can see that they are not in the same order but duration is on both the first place. Helps us to interpret the data. For example balance attribute is on the second place in MeanDecreaseGini and the last on the MeanDecreaseAccuracy.
+
+
+## Improve Random Forest
+
+### Sample size
+```{r}
+samp <- c(800, 1000, 1200, 1500, 1800)
+
+for (s in samp) {
+  rf2 <- randomForest(y ~., data = train, importance=TRUE, sampsize=s)
+  
+  predict_rf2 <- predict(rf2, test, type="class")
+  
+  print((TAB <- table(test$y,predict_rf2)))
+  
+  print(1-sum(diag(TAB))/sum(TAB))
+}
+```
+
+With that technique we couldn't manage to reduce our miss-classification error nor the True positives. 
+
+### Classwt
+
+```{r}
+wy = sum(train$y=="yes")/length(train$y)
+wy
+wn = 1
+```
+
+```{r}
+weight <- c(0.15, 0.80, 1.5, 5, 10, 15, 20)
+
+for (w in weight) {
+  rf3 <- randomForest(y ~., data = train, importance=TRUE, classwt = c("yes"=1, "no"=w))
+  
+  predict_rf3 <- predict(rf3, test, type="class")
+  
+  print("For Weight:")
+  print(w)
+  print((TAB <- table(test$y,predict_rf3)))
+  
+  print(1-sum(diag(TAB))/sum(TAB))
+}
+```
+
+Here we can see the True Positives raised form 35 (our initial model from the previous step) to 42 now. But our True Negatives reduced from 887 to 880. So it is a tried-off to boost the smaller class.
+
+### Cutoff technique
+
+```{r}
+rf4 <- randomForest(y ~., data = train, importance=TRUE, cutoff=c(0.7, 0.3))
+
+predict_rf4 <- predict(rf4, test, type="class")
+
+print((TAB <- table(test$y,predict_rf4)))
+
+print(1-sum(diag(TAB))/sum(TAB))
+```
+
+With Cutoff we have much better results on the True Positives. From 42 to 71.The miss-classification error is a little bit higher and True negatives are a little bit less.
+ 
+### Strata technique
+
+```{r}
+rf5 <- randomForest(y ~., data = train, importance=TRUE, strata=y)
+
+predict_rf5 <- predict(rf5, test, type="class")
+
+print((TAB <- table(test$y,predict_rf5)))
+
+print(1-sum(diag(TAB))/sum(TAB))
+```
+
+We don't have much improvement with stratifying the data. Still we have good miss-classification error but underrepresented **YES** class still suffers. 
+
+
+As conclusion I can say that **Classwt** and **Cutoff** techniques did the best job. We managed to score less miss-classification error for True Positives and achieving less accurate True Negatives, but those technique helps when we have unbalanced data to improve the underrepresented class.
+

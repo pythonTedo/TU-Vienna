@@ -1,0 +1,106 @@
+---
+title: "Task 7"
+subtitle: "for Advanced Methods for Regression and Classification"
+author: "Teodor Chakarov"
+date: 21.12.2022
+output: 
+  pdf_document:
+    toc: TRUE
+---
+
+
+```{r}
+library(mgcv)
+library(ISLR)
+
+```
+
+# Task 1
+
+## Load data and split for training
+
+Im going to load the data and inspect it.
+```{r}
+data(OJ ,package="ISLR")
+
+df <- OJ
+
+df <- na.omit(df)
+
+str(df)
+```
+
+Split the data to train/test
+```{r}
+set.seed(1234555)
+
+train_ind = sample(1:nrow(OJ), 0.66 * nrow(OJ))
+train <- OJ[train_ind,]
+test <- OJ[-train_ind,]
+
+# Setting the y to be "Apps"
+#y_train = train[ , which(names(train) %in% c("Apps"))]
+#y_test = test[ , which(names(test) %in% c("Apps"))]
+
+# Removing the predictive variable from the training and testing sets.
+#x_train = train[ , -which(names(train) %in% c("Apps"))]
+#x_test = test[ , -which(names(test) %in% c("Apps"))]
+
+``` 
+
+
+## Fit the data to GAM model
+
+I will fit all of the parameters but not going to assign smoothing function for the categorical attributes, they will remain as a factor.
+```{r}
+p <- 5
+
+gam_mod <- gam(Purchase ~ s(WeekofPurchase, k=p) + factor(StoreID) + s(PriceCH, k=p) + s(PriceMM, k=p) + s(DiscCH, k=p) + s(DiscMM, k=p) + factor(SpecialCH) + factor(SpecialMM) + s(LoyalCH, k=p) + s(SalePriceMM, k=p) + s(SalePriceCH, k=p) + s(PriceDiff, k=p) + Store7 + s(PctDiscMM, k=p) + s(PctDiscCH, k=p) + s(ListPriceDiff, k=p) + factor(STORE), data=train, family="binomial")
+
+summary(gam_mod)
+```
+
+Based on the model I constructed we can see that the majority of the coefficients are not significant for the model at all. For the parametric coefficients we dont have significance. For the approximated smooth therms we have significance only on LoyalCH, DiscMM, ListPriceDiff. 
+We can also see with the help of **edf** column that for LoyalCH, DiscMM, DiscCH, PriceCH, PctDiscMM, PctDiscCH we have 1, which meand the fit is straight line. We can see that ont the next plot. 
+
+```{r}
+plot(gam_mod,page=1,shade=TRUE,shade.col="yellow")
+```
+
+We have a lot of attributes fitted with a straight line. For the attribute LoyalCH and ListPriceDiff we can see the who the line describes the data itself.
+
+```{r}
+#x_test = test[ , -which(names(test) %in% c("Purchase"))]
+
+gam.res <- predict(gam_mod, test)>0.5
+gam.TAB <- table(test$Purchase,as.numeric(gam.res))
+gam.TAB
+
+print('Misclassification error:')
+print(1-sum(diag(gam.TAB))/sum(gam.TAB))
+```
+
+And with the miss-Classifications error we can see that our model produces not bad results. We can also see from the confusion matrix that we have more False Positives (the class MM is miss-classified).
+
+## Model Optimization
+
+For Model optimization I will pick by hand the attributes based on the significance from the previous model. I will get rid of the categorical variables and also reduce the degrees of freedom to 2.
+
+```{r}
+p <- 2
+
+gam_mod <- gam(Purchase ~ s(DiscMM, k=p) + factor(SpecialCH) + factor(SpecialMM) + s(LoyalCH, k=p) + s(ListPriceDiff, k=p), data=train, family="binomial", select = TRUE)
+
+#summary(gam_mod)
+
+gam.res <- predict(gam_mod, test)>0.5
+gam.TAB <- table(test$Purchase,as.numeric(gam.res))
+gam.TAB
+
+print('Misclassification error:')
+print(1-sum(diag(gam.TAB))/sum(gam.TAB))
+```
+
+At the end we reduced our Misclassification error and we also have model with less parameters than the previous.
+
+
