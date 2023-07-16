@@ -1,0 +1,103 @@
+\documentclass[a4paper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[naustrian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,enumerate}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{subfig}
+\usepackage{fancyvrb}
+\usepackage{float}
+\usepackage{listings}
+\lstset{language=sql,basicstyle=\small,keywordstyle=\ttfamily,morekeywords={REFERENCES,DEFERRED}}
+\usepackage{tabularx}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
+\usepackage{enumitem}
+
+\usepackage{scrlayer-scrpage}
+\pagestyle{scrheadings}
+
+\newcommand{\ul}[1]{\underline{#1}}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\R}{\ensuremath{\mathcal{R}}}
+
+\newtheorem{ex}{Exercise}
+\newenvironment{exercise}[2]%
+   {\def\tmp{}%
+    \ifx\points\tmp
+      \begin{ex}
+    \else
+      \def\tmp{1}%
+      \begin{ex}[#1][#2 Point\ifx\points\tmp\else s\fi]
+    \fi
+    \normalfont
+   }%
+   {\end{ex} %
+   }
+
+%% HINWEIS!
+%% 
+%% Die vorgegebene Formatierung der Loesung ist nur als
+%% Beispiel bzw. Hilfe gedacht und kann gerne geaendert
+%% werden.
+
+
+\title{Exercise Sheet 1, 2023}
+\subtitle{6.0 VU Advanced Database Systems}
+\author{Teodor Chakarov (12141198)}
+
+\automark{section}
+\ohead{\pagemark}
+\makeatletter
+\chead{ADBS 2020 -- \@author}
+\makeatother
+\cfoot{}
+
+\begin{document}
+\maketitle
+
+\begin{exercise}{Disk Access}{3}
+
+  \begin{figure}[h]
+    \centering
+    \begin{BVerbatim}
+      Hash Join
+      Hash Cond: (r.by = a.id)
+      ->  Seq Scan on record r
+      ->  Hash
+      ->  Seq Scan on artist a
+    \end{BVerbatim}   
+    \caption{Query Plan Verbatim Example}
+    \label{fig:ex}
+  \end{figure}
+  
+\end{exercise}
+
+\begin{exercise}{Selectivity}{3}
+
+\end{exercise}
+
+\begin{exercise}{The Query Planner and You}{4}
+  \begin{enumerate}[label=(\alph*)]   
+  \item % a
+  \item % b
+  \item % c
+  \item % d
+  \item % e 
+  \item % f
+  \end{enumerate}  
+  
+\end{exercise}
+
+\begin{exercise}{Query Optimization}{5}
+  \begin{enumerate}[label=(\alph*)]
+  \item % a
+  \item % b
+  \item % c 
+  \item % d
+  \end{enumerate}  
+\end{exercise}
+
+
+\end{document}
